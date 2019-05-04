@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<style>
+html {
+	height: 100%;
+	//
+	让html的高度等于屏幕
+}
+
+body {
+	height: 100%;
+	margin: 0;
+}
+</style>
+<body>
+	<div class="content_wrap">
+		<div class="zTreeDemoBackground left">
+			<ul id="roleTree" class="ztree"></ul>
+		</div>
+	</div>
+</body>
+<script th:inline="javascript" >
+    var roleId = [[${roleId}]];
+    layui.use('layer', function() {
+        layer = layui.layer;
+        $.post(path+'role/getResourceTree',{id:roleId},function(json){
+            if(json){
+                $.fn.zTree.init($("#roleTree"), setting, json);
+            }
+        });
+    });
+    var setting = {
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    };
+
+    function addResource(){
+        var treeObj=$.fn.zTree.getZTreeObj("roleTree");
+        var nodes = treeObj.getCheckedNodes(true);
+        var menuId = "";
+        for(var i in nodes){
+            menuId += nodes[i].id +",";
+		}
+        var flag = false;
+        $.ajax({
+            type : "post",
+            url : path+'role/addResourceRole',
+            data : {id:roleId,ids : menuId},
+            async : false,
+            success : function(data){
+                if(data > 0)
+                    flag = true
+
+            }
+        });
+        return flag;
+    }
+</script>
+</html>

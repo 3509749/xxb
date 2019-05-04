@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<style>
+html {
+	height: 100%;
+	//
+	让html的高度等于屏幕
+}
+
+body {
+	height: 100%;
+	margin: 0;
+}
+.layui-form-pane .layui-form-label{
+	width: 150px;
+}
+.layui-form-pane .layui-input-block{
+	margin-left:150px;
+}
+</style>
+<body id="thisbody" >
+<form id="addForm" class="layui-form layui-form-pane" style="margin-top: 5px" th:object="${data}" >
+	<div class="layui-form-item">
+		<label class="layui-form-label required">上级菜单编码</label>
+		<div class="layui-input-block">
+			<input type="text"  id="sjcdbm" th:value="*{parentId}" readonly="readonly"  autocomplete="off" class="layui-input disabled-background-color"  />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label required">上级菜单</label>
+		<div class="layui-input-block">
+			<select id="parentId" name="parentId" lay-verify="required" lay-search=""  lay-filter="selectEvent"     >
+			</select>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label required">菜单编码</label>
+		<div class="layui-input-block">
+			<input type="text" name="menuId" th:value="*{menuId}"  required="" lay-verify="required" placeholder="请输入菜单编码" value="" autocomplete="off" th:readonly="null eq *{menuId}?false:true" th:class="null eq *{menuId}?'layui-input':'layui-input disabled-background-color'" class=""  />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label required">菜单名称</label>
+		<div class="layui-input-block">
+			<input type="text" name="menuName" th:value="*{menuName}"  required="" lay-verify="required" placeholder="请输入菜单名称" value="" autocomplete="off" class="layui-input"  />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label required">菜单类型</label>
+		<div class="layui-input-block">
+			<input type="text" name="menuType" th:value="*{menuType}" required="" lay-verify="required" placeholder="请输入菜单类型" value="" autocomplete="off" class="layui-input"  />
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">url</label>
+		<div class="layui-input-block">
+			<input type="text" name="url" th:value="*{url}" required=""  placeholder="请输入url" value="" autocomplete="off" class="layui-input"  />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label ">备注</label>
+		<div class="layui-input-block">
+			<input type="text" name="notes" th:value="*{notes}" required="" placeholder="请输入备注" value="" autocomplete="off" class="layui-input"  />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label required">排列序号</label>
+		<div class="layui-input-block">
+			<input type="text" name="orderNum" th:value="*{orderNum}" required="" lay-verify="required" placeholder="请输入排列序号" value="" autocomplete="off" class="layui-input" />
+		</div>
+	</div>
+</form>
+</body>
+<script th:inline="javascript" >
+    var data = [[${data}]];
+    layui.use('form', function(){
+        form = layui.form;
+        initParentId();
+        form.on('select(selectEvent)', function(data){
+            $("#sjcdbm").val(data.value)
+        });
+    });
+
+    function save() {
+        var url;
+        if(data.menuId == null || data.menuId == '' )
+            url = 'add';
+        else
+            url = 'update';
+        $.ajax({
+            type: 'POST',
+            url: path + 'menu/'+url,
+            data : $("#addForm").serialize(),
+            async : false,
+            success: function(result) {
+                if(result==1){
+                    flag = true;
+                }else{
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+    }
+
+    function initParentId() {
+        $.ajax({
+            type: 'POST',
+            url: path+'common/getHtmlSelectOptionsByWhereCase',
+            data:{tableName:"xxb_MENU",codeField : "menu_id",nameField :"menu_name",whereCase:"parent_id is null","selectValue": data.parentId},
+            async : false,
+            success: function(result) {
+                $("#parentId").html('<option value=""></option>'+result);
+                form.render("select");
+            }
+        });
+    }
+
+
+
+    function yz(){
+        if(!Verification($("#addForm")))
+            return false;
+        else
+            return true;
+    }
+</script>
+</html>

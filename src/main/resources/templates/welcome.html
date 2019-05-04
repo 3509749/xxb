@@ -1,0 +1,94 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head th:replace="baseJs::header"  ></head>
+<link  th:href="@{/css/welcome.css}"  rel="stylesheet" />
+
+<body style="background:#FAFAFA;">
+<div class="title_box">
+	<div class="yuanquan"></div>
+	<div class="title_name">基础管理</div>
+</div>
+<div class="jcgl_cont">
+	<ul>
+		<li>
+			<i class="zdyx"></i>
+			<div class="cont">
+				<a href="#" th:text="${zdyx}"></a>
+				<p>重点院校</p>
+			</div>
+		</li>
+		<li>
+			<i class="kclb"></i>
+			<div class="cont">
+				<a href="#"  th:text="${kclb}"></a>
+				<p>课程类别</p>
+			</div>
+		</li>
+		<li>
+			<i class="rmzy"></i>
+			<div class="cont">
+				<a href="#" th:text="${rmzy}"></a>
+				<p>热门专业</p>
+			</div>
+		</li>
+		<li>
+			<i class="xlgl"></i>
+			<div class="cont">
+				<a href="#" th:text="${xlgl}"></a>
+				<p>学历管理</p>
+			</div>
+		</li>
+	</ul>
+</div>
+<div class="title_box">
+	<div class="yuanquan"></div>
+	<div class="title_name">学员相关</div>
+</div>
+<div class="xyxg_cont">
+	<ul>
+		<li>
+			<i class="zcxy"></i>
+			<div class="cont">
+				<a href="#" th:text="${xlgl}"></a>
+				<p>注册学员</p>
+			</div>
+		</li>
+		<li>
+			<i class="zcdsh"></i>
+			<div class="cont">
+				<a href="#" th:text="${zcdsh}"></a>
+				<p>注册待审核</p>
+			</div>
+		</li>
+		<li>
+			<i class="yjf"></i>
+			<div class="cont">
+				<a href="#" th:text="${yjf}"></a>
+				<p>已缴费</p>
+			</div>
+		</li>
+		<li>
+			<i class="wjf"></i>
+			<div class="cont">
+				<a href="#" th:text="${wjf}"></a>
+				<p>未缴费</p>
+			</div>
+		</li>
+		<li>
+			<i class="wsqy"></i>
+			<div class="cont">
+				<a href="#" th:text="${wsqy}"></a>
+				<p>网上签约</p>
+			</div>
+		</li>
+	</ul>
+</div>
+<div class="title_box">
+	<div class="yuanquan"></div>
+	<div class="title_name">学员列表</div>
+</div>
+</body>
+<script>
+
+</script>
+</html>

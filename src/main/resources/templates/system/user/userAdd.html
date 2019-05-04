@@ -1,0 +1,367 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+
+<title>客户新增</title>
+<style>
+html{
+height:100%;//让html的高度等于屏幕
+}
+body{
+height:100%;
+margin:0;
+overflow-x:hidden;
+overflow-y:hidden;
+}
+.layui-inline{
+	width: 100%;
+	padding-top: 10px;
+ }
+.inline2{
+	float: left;
+	width: 48%;
+	padding-left: 10px;
+}
+.inline4{
+	float: left;
+	width: 24%;
+	padding-left: 10px;
+}
+</style>
+<body id="thisbody">
+<form id="addForm" class="layui-form layui-form-pane" th:object="${data}"  style="margin-top: 5px">
+	<div class="layui-row">
+		<div class="layui-inline">
+			<div class="inline4" >
+				<label class="layui-form-label required">用户名</label>
+				<div class="layui-input-block">
+					<input type="text" id="userName" name="userName" onblur="check()"  th:value="*{userName}"  lay-verify="required"  autocomplete="off" class="layui-input"  />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">姓名</label>
+				<div class="layui-input-block">
+					<input type="text" name="studentName" th:value="*{studentName}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">性别</label>
+				<div class="layui-input-block">
+					<select  name="sex"   lay-search=""     >
+						<option value="1" th:selected="'1' eq *{sex}?'true':'false'"  >男</option>
+						<option value="2" th:selected="'2' eq *{sex}?'true':'false'" >女</option>
+					</select>
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">类型</label>
+				<div class="layui-input-block">
+					<select id="userType" name="userType" lay-verify="required"  lay-search=""     >
+						<option th:if="${userType} eq 1" >系统用户</option>
+						<option th:if="${userType} eq 2" >学员用户</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline  ">
+			<div class="inline4"  >
+				<label class="layui-form-label required">身份证</label>
+				<div class="layui-input-block">
+					<input type="text" name="studentCardId" th:value="*{studentCardId}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">生日</label>
+				<div class="layui-input-block">
+					<input type="text" id="birthday" name="birthday" th:value="*{birthday}"  required=""  value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label required">密码</label>
+				<div class="layui-input-block">
+					<input type="password" name="password" th:value="*{password}" required="" lay-verify="required" placeholder="请输入密码" value="" autocomplete="off" class="layui-input"  />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label required">重复密码</label>
+				<div class="layui-input-block">
+					<input type="password" name="password" th:value="*{password}" required="" lay-verify="required" placeholder="请重复输入密码" value="" autocomplete="off" class="layui-input"  />
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline  ">
+			<div class="inline4"  >
+				<label class="layui-form-label required">邮箱</label>
+				<div class="layui-input-block">
+					<input type="text" name="email" th:value="*{email}" lay-verify="email"   value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label required">手机号</label>
+				<div class="layui-input-block">
+					<input type="text" name="phone" th:value="*{phone}" lay-verify="phone"   value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">婚姻状况</label>
+				<div class="layui-input-block">
+					<select  name="maritalStatus"   lay-search=""     >
+						<option value="1" th:selected="'1' eq *{sex}?'true':'false'"  >未婚</option>
+						<option value="2" th:selected="'2' eq *{sex}?'true':'false'" >已婚</option>
+					</select>
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">学历</label>
+				<div class="layui-input-block">
+					<select  name="education"   lay-search=""  >
+						<option value="3" th:selected="'1' eq *{education}?'true':'false'" >初中</option>
+						<option value="3" th:selected="'2' eq *{education}?'true':'false'" >中专</option>
+						<option value="3" th:selected="'3' eq *{education}?'true':'false'" >高中</option>
+						<option value="3" th:selected="'4' eq *{education}?'true':'false'" >大专</option>
+						<option value="3" th:selected="'5' eq *{education}?'true':'false'" >博士研究生</option>
+						<option value="4" th:selected="'6' eq *{education}?'true':'false'" >硕士研究生</option>
+						<option value="5" th:selected="'7' eq *{education}?'true':'false'" >博士研究生</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<div class="inline4"  >
+				<label class="layui-form-label ">工作单位</label>
+				<div class="layui-input-block">
+					<input type="text" name="workplace" th:value="*{workplace}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">职务</label>
+				<div class="layui-input-block">
+					<input type="text" name="duties" th:value="*{duties}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">政治面貌</label>
+				<div class="layui-input-block">
+					<select  name="politicalOrientation"   lay-search=""  >
+						<option value="1" th:selected="'1' eq *{annualIncome}?'true':'false'" >党员</option>
+						<option value="2" th:selected="'2' eq *{annualIncome}?'true':'false'" >团员</option>
+					</select>
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">年收入</label>
+				<div class="layui-input-block">
+					<select  name="annualIncome"   lay-search=""  >
+						<option value="5-" th:selected="'5-' eq *{annualIncome}?'true':'false'" >5万以下</option>
+						<option value="5-10" th:selected="'5-10' eq *{annualIncome}?'true':'false'" >5万-10万</option>
+						<option value="10-20" th:selected="'10-20' eq *{annualIncome}?'true':'false'" >10万-20万</option>
+						<option value="20-30" th:selected="'20-30' eq *{annualIncome}?'true':'false'" >20万-30万</option>
+						<option value="30+" th:selected="'30+' eq *{annualIncome}?'true':'false'"  >30万以上</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<div class="inline2"   >
+				<label class="layui-form-label ">身份证地址</label>
+				<div class="layui-input-block">
+					<input type="text" name="cardAddress" th:value="*{cardAddress}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline2"  >
+				<label class="layui-form-label ">现地址</label>
+				<div class="layui-input-block">
+					<input type="text" name="address" th:value="*{address}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<div class="inline4"  >
+				<label class="layui-form-label ">用户名</label>
+				<div class="layui-input-block">
+					<input type="text" name="bankUserName" th:value="*{bankUserName}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">卡号</label>
+				<div class="layui-input-block">
+					<input type="text" name="bankCardNo" th:value="*{bankCardNo}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline2"  >
+				<label class="layui-form-label ">开户行</label>
+				<div class="layui-input-block">
+					<input type="text" name="bankName" th:value="*{bankName}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<div class="inline4"  >
+				<label class="layui-form-label ">紧急联系人1</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencContact1" th:value="*{emergencContact1}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">电话</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencPhone1" th:value="*{emergencPhone1}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline2"  >
+				<label class="layui-form-label ">地址</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencAddr1" th:value="*{emergencAddr1}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<div class="inline4"  >
+				<label class="layui-form-label ">紧急联系人2</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencContact2" th:value="*{emergencContact2}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">电话</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencPhone2" th:value="*{emergencPhone2}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline2"  >
+				<label class="layui-form-label ">地址</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencAddr2" th:value="*{emergencAddr2}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<div class="inline4"  >
+				<label class="layui-form-label ">紧急联系人3</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencContact3" th:value="*{emergencContact3}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">电话</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencPhone3" th:value="*{emergencPhone3}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline2"  >
+				<label class="layui-form-label ">地址</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencAddr3" th:value="*{emergencAddr3}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<div class="inline4"  >
+				<label class="layui-form-label ">紧急联系人4</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencContact4" th:value="*{emergencContact4}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline4"  >
+				<label class="layui-form-label ">电话</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencPhone4" th:value="*{emergencPhone4}"    value="" autocomplete="off" class="layui-input"   />
+				</div>
+			</div>
+			<div class="inline2"  >
+				<label class="layui-form-label ">地址</label>
+				<div class="layui-input-block">
+					<input type="text" name="emergencAddr4" th:value="*{emergencAddr4}"    value="" autocomplete="off" class="layui-input"   />
+					<input type="hidden" name="userId" th:value="*{userId}" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+</body>
+<script th:inline="javascript">
+	var data = [[${data}]];
+	var userType = [[${userType}]];
+	var table;
+	var imgflag = true;
+	var form;
+    layui.use(['upload', 'table','laydate','form'], function() {
+		upload = layui.upload;
+        laydate = layui.laydate;
+        table= layui.table;
+        form= layui.form;
+        laydate.render({
+            elem: '#graduatedTime',
+            type: 'date',
+            value: data.graduatedTime==null?new Date():new Date(data.graduatedTime)
+        });
+        laydate.render({
+            elem: '#birthday',
+            type: 'date',
+            value: data.birthday==null?new Date():new Date(data.birthday)
+        });
+
+        formFocus($("#addForm"));
+    });
+
+
+
+    function save() {
+        var flag;
+        var obj = $("#addForm").form2json();
+        obj.userType = userType;
+        obj.birthday  = new Date(Date.parse(obj.birthday.replace(/-/g,"/")));
+        $.ajax({
+            type: 'POST',
+            url: path + 'xxbUser/add',
+            data : obj,
+            async : false,
+            success: function(result) {
+                if(result==1){
+                    flag = true;
+                }else{
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+    }
+
+    function yz(){
+        if(!userNameFlag) return;
+        if($("input[name='password']:eq(0)").val() != $("input[name='password']:eq(1)").val()){
+            failTip('重复密码不正确');
+            return false;
+        }
+        if(!Verification($("#addForm")))
+            return false;
+        else
+            return true;
+    }
+
+    var userNameFlag;
+	function check() {
+        if($("#userName").val() == "")
+            return;
+        $.ajax({
+            type: 'POST',
+            url: path + 'xxbUser/checkUserName',
+            data : {"userName":$("#userName").val()},
+            success: function(result) {
+                if(result){
+                    userNameFlag = true;
+                }
+                else{
+                    userNameFlag = false;
+                    failTip('已存在用户名，请重新填写。');
+                    $("#userName").val("");
+                    $("#userName").html("");
+                }
+
+            }
+        });
+    }
+
+
+</script>
+</html>

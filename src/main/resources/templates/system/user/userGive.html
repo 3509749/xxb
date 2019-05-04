@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<link rel="stylesheet" th:href="@{/transfer/style.css}" />
+<script th:src="@{/transfer/Transfer.js}"  ></script>
+<style>
+html {
+	height: 100%;
+	//
+	让html的高度等于屏幕
+}
+
+body {
+	height: 100%;
+	margin: 0;
+}
+</style>
+<body id="thisbody" >
+
+<div class="ty-transfer mt20 ml20" id="ued-transfer-1">
+	<div class="fl ty-transfer-list transfer-list-left">
+		<div class="ty-transfer-list-head">
+			系统权限
+		</div>
+		<div class="ty-transfer-list-body">
+			<ul class="ty-tree-select">
+					<li th:each="item,itemStat : ${otherRoles}" >
+						<div class="ty-tree-div">
+							<label class="tyue-checkbox-wrapper">
+                            <span class="tyue-checkbox">
+                                <input type="checkbox" class="tyue-checkbox-input" id="tyue-checkbox-blue" />
+                                <span class="tyue-checkbox-circle">
+                                </span>
+                            </span>
+							<span class="tyue-checkbox-txt"  th:title="${item.roleId}" th:text=" ${item.roleName}" >
+                                <input type="hidden" class="hivalue" th:value="${item.roleId}" />
+                            </span>
+							</label>
+						</div>
+					</li>
+			</ul>
+		</div>
+		<div class="ty-transfer-list-foot">
+			<div class="ty-tree-div">
+				<div class="tyc-check-blue fl">
+					<input type="checkbox" class="transfer-all-check" id="tyc-check-blue" />
+					<span>
+                    </span>
+				</div>
+				<div class="ty-tree-text">
+					全选
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="fl ty-transfer-operation">
+        <span class="ty-transfer-btn-toright to-switch">
+        </span>
+		<span class="ty-transfer-btn-toleft to-switch">
+        </span>
+	</div>
+	<div class="fl ty-transfer-list transfer-list-right">
+		<div class="ty-transfer-list-head">
+			拥有权限
+		</div>
+		<div class="ty-transfer-list-body">
+			<ul class="ty-tree-select">
+					<li th:each="item,itemStat : ${myRoles}" >
+						<div class="ty-tree-div">
+							<label class="tyue-checkbox-wrapper">
+                            <span class="tyue-checkbox">
+                                <input type="checkbox" class="tyue-checkbox-input" id="tyue-checkbox-blue" />
+                                <span class="tyue-checkbox-circle">
+                                </span>
+                            </span>
+								<span class="tyue-checkbox-txt"  th:title="${item.roleId}" th:text="${item.roleName}">
+                                <input type="hidden" class="hivalue"  th:value="${item.roleId}"  />
+                            </span>
+							</label>
+						</div>
+					</li>
+			</ul>
+		</div>
+		<div class="ty-transfer-list-foot">
+			<div class="ty-tree-div">
+				<div class="tyc-check-blue fl">
+					<input type="checkbox" class="transfer-all-check" id="tyc-check-blue" />
+					<span>
+                    </span>
+				</div>
+				<div class="ty-tree-text">
+					全选
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="clearboth">
+	</div>
+</div>       
+</body>
+<script th:inline="javascript" >
+    var userId = [[${userId}]];
+    $("#ued-transfer-1").transferItem();
+
+    function save(){
+        var roles=[];
+        var flag = false;
+         $(".transfer-list-right .tyue-checkbox-txt").each(function(i,e){
+            roles.push({
+                userId:userId,
+                roleId:$(e).attr("title")
+            });
+        });
+        $.ajax({
+            url: path + 'user/userRoleEdit',
+            data : {roles:JSON.stringify(roles),userId:userId},
+            async : false,
+            success: function(result) {
+                if(result==2000){
+                    flag = true;
+                }else{
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+
+	}
+
+
+
+</script>
+</html>

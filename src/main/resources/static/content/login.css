@@ -1,0 +1,39 @@
+html {
+    height:100%;
+}
+body {
+    height:100%;
+    margin:0;
+    background:#2D2A3F url(../img/login_index_admin.png);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.login{
+    position:absolute;
+    width:500px;
+    height:280px;
+    top:50%;
+    left:50%;
+    background-size:100%;
+}
+    .login fieldset {
+        text-align:center;
+        margin:0 30px 50px;
+    }
+    .login .layui-form-item {
+        margin-bottom:20px;
+    }
+    .login .layui-input-inline{
+        width:300px;
+    }
+    .login input.layui-input {
+        background:url(../img/login_input.png) repeat-x;
+    }
+    .login .layui-field-title, .login .layui-form-label, .login .layui-input {
+        color: #fff;
+    }
+    .login .layui-field-title legend  {
+        font-size:26px;
+        font-family:600;
+    }

@@ -1,0 +1,172 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"></head>
+<script th:src="@{/js/jq-signature.js}"></script>
+<title>在线签约</title>
+<style>
+    html {
+        height: 100%;
+    / / 让html的高度等于屏幕
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+</style>
+<body id="thisbody">
+
+<div id="addForm" class="layui-form layui-form-pane" style="margin-top: 5px;height: 100%" th:object="${data}">
+
+
+    <div id="pdfArea" style="height: 70%">
+
+    </div>
+    <div id="title" style="height: 20px">
+        客户签字区域:
+    </div>
+    <div id="qm" data-width="100%" data-height="200" data-border="1px solid black" data-line-color="#bc0000"
+         data-auto-fit="true">
+    </div>
+
+    <div class="layui-btn-container" style="text-align: center">
+        <button id="clearBtn" class="layui-btn layui-btn-lg  layui-btn-radius" style="width: 120px" onclick="clearCanvas();">清除
+        </button>&nbsp;
+        <button id="saveBtn" class="layui-btn layui-btn-lg  layui-btn-radius" style="width: 120px"
+                onclick="saveSignature();" disabled="disabled">确定
+        </button>
+    </div>
+
+
+    <!--<input type="text" th:value="*{serId}" name="serId" style="display: none"/>-->
+</div>
+
+
+<div id="table"></div>
+</body>
+<script th:inline="javascript">
+    var data = [[${data}]];
+    var pdfUrl = [[${pdfUrl}]];
+    var pdfName = [[${pdfName}]];
+    var id = [[${id}]];
+    var type = [[${type}]];
+    var panelOption = {
+        type: 2,
+        area: ['1400px', '530px'],
+        shade: 0.3,
+        scrollbar: false,
+        maxmin: true,
+        offset: '0px'
+    }
+    layui.use(['upload', 'element', 'laydate'], function () {
+        var $ = layui.jquery
+            , upload = layui.upload, element = layui.element, laydate = layui.laydate;
+        $('#qm').jqSignature();
+        $('#qm').on('jq.signature.changed', function () {
+            $('#saveBtn').attr('disabled', false);
+        });
+
+        if (pdfUrl) {
+            $('#pdfArea').html(createFrame(path + 'pdfjs/web/viewer.html?' + 'file=/xxbContract/viewPdf2?fileName=' + pdfUrl));
+        }
+
+
+    });
+
+    function clearCanvas() {
+        $('#qm').jqSignature('clearCanvas');
+        $('#saveBtn').attr('disabled', true);
+    }
+
+    function saveSignature() {
+        var dataUrl = $('#qm').jqSignature('getDataURL');
+        var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        var obj = new Blob([u8arr], {type: mime});
+        var fd = new FormData();
+        var timestamp = new Date().getTime();
+        fd.append("file", obj, timestamp + ".png");
+        layer.msg('合同生成中...', {icon: 16, shade: [0.5, '#f5f5f5'], scrollbar: false, offset: '0px', time: 100000});
+        $.ajax({
+            /*<![CDATA[*/
+            url: path + "xxbContract/uploadSign?pdfName=" + pdfName + "&id=" + id + "&type=" + type, /*]]>*/
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: fd,
+            success: function (data) {
+                if (data.flag) {
+                    layer.msg('恭喜您，合同已经生效！', {time: 5000, offset: '10px'});
+                    $('#clearBtn').attr('disabled', 'true');
+                    $('#saveBtn').attr('disabled', 'true');
+                    setTimeout(function () {
+
+                        layer.confirm('合同已经生效,当前您希望进行的操作是？1', {
+                            btn: ['返回主页', '查看合同'] //按钮
+                        }, function () {
+                            $(location).attr('href', path + "list");
+                        }, function () {
+                            //合同预览界面
+                            $(location).attr('href', path + "xxbContract/printContract?pdfUrl=" + data.url);
+                        });
+
+                    }, 1000);
+
+                } else {
+                    layer.msg('签名保存失败,请重试！', {time: 5000, offset: '10px'});
+                    //  mui.toast('签名保存失败,请重试', {duration: 'long', type: 'div'});
+                }
+
+
+            }
+        });
+
+
+    }
+
+
+    function createFrame(url) {
+
+        return '<iframe id="tab_iframe" name="tab_iframe" scrolling="no" frameborder="0"  src="'
+            + url
+            + '" style="width:100%;height:100%'
+            + ';"></iframe>';
+    }
+
+    function createHideDiv(name, value) {
+        return '<input type="text" value="' + value + '" id="' + name + '" name="' + name + '" scrolling="no" frameborder="0" style="width:100%;height:100%;display: none" />';
+    }
+
+    function save() {
+        var flag;
+        $.ajax({
+            type: 'POST',
+            url: path + 'lybContract/add',
+            data: $("#addForm").serialize(),
+            async: false,
+            success: function (result) {
+                if (result == 1) {
+                    flag = true;
+                } else {
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+    }
+
+
+    function yz() {
+        if (!Verification($("#addForm")))
+            return false;
+        else
+            return true;
+    }
+</script>
+</html>

@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<style>
+html {
+	height: 100%;
+	//
+	让html的高度等于屏幕
+}
+
+body {
+	height: 100%;
+	margin: 0;
+}
+</style>
+<body id="thisbody">
+<form id="addForm" th:object="${data}" class="layui-form layui-form-pane" style="margin-top: 5px">
+	<div class="layui-form-item">
+		<label class="layui-form-label required">角色名称</label>
+		<div class="layui-input-block">
+			<input type="text" name="roleName" th:value="*{roleName}" required="" lay-verify="required"  placeholder="请填写角色名称" value="" autocomplete="off" class="layui-input" tabind="0" />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label ">备注</label>
+		<div class="layui-input-block">
+			<input type="text" name="notes" th:value="*{notes}"  placeholder="请填备注" autocomplete="off" class="layui-input" tabind="1" />
+		</div>
+	</div>
+	<div class="layui-form-item" pane="">
+		<label class="layui-form-label required">状态</label>
+		<div class="layui-input-block">
+			<input type="radio" name="status" value="1" title="启用"  th:checked="1 eq *{status}?'true':'false'"   />
+			<input type="radio" name="status" value="0" title="停用" th:checked="0 eq *{status}?'true':'false'" />
+		</div>
+	</div>
+    <input type="hidden" name="roleId" th:value="*{roleId}" />
+</form>
+</body>
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+    });
+    function save() {
+        var flag;
+        $.ajax({
+            type: 'POST',
+            url: path+'role/add',
+            data:$("#addForm").serialize(),
+            async : false,
+            success: function(result) {
+                if(result==1){
+                    flag = true;
+                }else{
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+    }
+</script>
+</html>

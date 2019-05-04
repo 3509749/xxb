@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sc.xxb.admin.mapper.UserMapper">
+	<resultMap id="BaseResultMap" type="com.sc.xxb.admin.model.UUser">
+		<id column="user_Id" property="userId" jdbcType="VARCHAR" />
+		<result column="user_Name" property="userName" jdbcType="VARCHAR" />
+		<result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+		<result column="user_Type" property="userType" jdbcType="DECIMAL" />
+		<result column="status" property="status" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="UserResultMap" type="com.sc.xxb.admin.model.User">
+		<id column="user_Id" property="userId" jdbcType="VARCHAR" />
+		<result column="user_Name" property="userName" jdbcType="VARCHAR" />
+
+		<result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+		<result column="user_Type" property="userType" jdbcType="DECIMAL" />
+		<result column="role_Id" property="roleId" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getUserByLoninName" resultMap="BaseResultMap">
+		SELECT * from pub_USER
+		where USER_NAME = #{loginName}
+	</select>
+	<select id="getUserByPage" parameterType="com.sc.xxb.admin.model.User" resultMap="UserResultMap">
+		SELECT a.* from pub_USER a
+		where 1=1
+		<if test=" userName!=null and userName !=''">
+			   and a.user_Name like '%'||#{userName}||'%'
+		</if>
+	</select> 
+	<select id="getUserById" parameterType="java.lang.String" resultMap="UserResultMap">
+	
+		SELECT a.* from pub_USER  a  where a.user_id=#{id}
+	</select> 
+	<select id="getUserCount" parameterType="com.sc.xxb.admin.model.User" resultType="java.lang.Integer">
+		SELECT count(1) from pub_USER
+	</select>
+	<insert id="insertUser" parameterType="com.sc.xxb.admin.model.User">
+		insert into pub_USER
+		(user_id, user_name,user_code, user_type,password, customer_id)
+		values (seq_user.nextval,
+		#{userName},
+
+		#{userType},
+		#{password},
+		#{customerId}
+		)
+	</insert>
+	<insert id="insertRole" parameterType="com.sc.xxb.admin.model.User">
+		insert into pub_R_USER_ROLE
+		(ID,USER_ID,ROLE_ID)
+		values (pub_R_USER_ROLE_SEQ.NEXTVAL,
+		#{id,jdbcType=VARCHAR},
+		#{role,jdbcType=VARCHAR} 
+		)
+	</insert>
+	<delete id="deleteUsers">
+		delete pub_USER  where user_id in
+		<foreach collection="array" item="id" index="index"  
+         open="(" close=")" separator=",">  
+        	#{id}  
+		</foreach>  
+	</delete>
+	<delete id="deleteRole" parameterType="com.sc.xxb.admin.model.User">
+		delete pub_R_USER_ROLE  where USER_ID = #{id}
+	</delete>
+	<delete id="deleteRoles" parameterType="com.sc.xxb.admin.model.User">
+		delete pub_R_USER_ROLE  where USER_ID in
+		<foreach collection="array" item="id" index="index"  
+         open="(" close=")" separator=",">  
+        	#{id}  
+		</foreach>
+	</delete>
+	
+	<update id="updateUser" parameterType="com.sc.xxb.admin.model.User">
+		update pub_USER
+			set 
+				user_Name = #{userName},
+
+				password = #{password},
+				user_Type = #{userType}
+				where user_Id = #{userId}
+	</update>
+	<update id="updatePass" parameterType="com.sc.xxb.admin.model.User">
+		update pub_USER
+			set 
+				password = #{password,jdbcType=VARCHAR}
+				where id = #{id,jdbcType=VARCHAR}
+	</update>
+
+
+
+</mapper>
+

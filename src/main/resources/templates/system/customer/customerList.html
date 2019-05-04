@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<style>
+html {
+	height: 100%;
+	//
+	让html的高度等于屏幕
+}
+
+body {
+	height: 100%;
+	margin: 0;
+}
+</style>
+<body id="thisbody">
+	<div class="content-header" id="header">
+		<div class="layui-btn-group">
+			<a class="layui-btn" id="add" onclick="addPage()"><i class="layui-icon">&#xe608;</i> 添加</a>
+			<a class="layui-btn" id="del" onclick="del()" ><i class="layui-icon">&#xe640;</i> 删除</a>
+		</div>
+		<div class="layui-inline" style="float:right;">
+			<div class="layui-inline">
+				<input type="text" id="searchValue" class="layui-input layui-input-search" placeholder="客户姓名"></input>
+			</div>
+			<div class="layui-inline">
+				<a class="layui-btn" onclick="reload()"><i class="layui-icon">&#xe615;</i> 查询</a>
+			</div>
+
+		</div>
+	</div>
+	<hr />
+	<div id="table"  ></div>
+	<script type="text/html" id="barDemo">
+		<a class="layui-btn layui-btn-mini" onclick="editPage('{{ d.customerId }}')">编辑</a>
+	</script>
+</body>
+<script>
+var h=$("#thisbody").height()-$("#header").height()-25;
+var w=($("#table").width() -170)/6;
+
+var panelOption = {
+	      type: 2 ,
+	      area: ['1000px', '600px'],
+	      shade: 0.3,
+	      scrollbar: false,
+	      maxmin: false,
+	      offset: '50px'
+}
+
+var table;
+layui.use(['layer', 'table'], function(){
+	table= layui.table;
+	layui.table.render({
+			id : 'customerTable',
+	    	elem: '#table',
+	        url: path + 'customer/getCustomerData',
+	        height: h,
+	        cols: [[ //标题栏
+	           	{checkbox: true, LAY_CHECKED: false,width: '3%',align:'center'},
+	          	{field: 'customerName', title: '客户名',  width: '20%',align:'center'},
+	          	{field: 'customerType', title: '客户类型',  width: '20%',align:'center',templet: function(d){
+                    if(d.customerType == 1)
+                        return "个人";
+                    else
+                        return "客户";
+	          	}},
+                {field: 'cardId', title: '编号',  width: '20%',align:'center'},
+	          	{field: 'phone', title: '电话',  width: '20%',align:'center'},
+				{fixed: 'right', title: '操作', width: '17%',toolbar: '#barDemo',align:'center'}
+	        ]],
+	        skin: 'row', //表格风格
+	        even: true,
+	        page: true, //是否显示分页
+	        limits: [15,20,50],
+	        limit: 15, //每页默认显示的数量
+	        loading: true, //请求数据时，是否显示loading
+	        done: function(res, curr, count){
+	    	  }
+	      });
+	   	$("#searchValue").keydown(function(e){
+	    var keyCode =window.event? e.keyCode:e.which;
+	    if(keyCode== 13){
+	    	reload();
+	    }
+		})
+});
+
+function reload(){
+    table.reload("customerTable", {
+        where: {
+            customerName: $("#searchValue").val()
+        }
+    });
+} ;
+
+function addPage(){
+    layer.open(extend({
+        id :"addPage",
+        title: '客户信息新增',
+        content: path + 'customer/customerAddPage',
+        btn: ['保存', '关闭'],
+        yes: function(index, layero){
+            var iframe = $(layero).find("iframe")[0].contentWindow;
+            if(!iframe.yz())return;
+            if(iframe.save()){
+                layer.close(index);
+                sucessTip("新增成功");
+                reload();
+            }else
+                failTip("新增失败");
+        }
+    },panelOption));
+};
+
+function editPage(id){
+    layer.open(extend({
+        id :"editPage",
+        title: '客户信息编辑',
+        content: path + 'customer/customerAddPage?id='+id,
+        btn: ['保存', '关闭'],
+        yes: function(index, layero){
+            var iframe = $(layero).find("iframe")[0].contentWindow;
+            if(!iframe.yz())return;
+            if(iframe.save()){
+                layer.close(index);
+                sucessTip("编辑成功");
+                reload();
+            }else
+                failTip("编辑失败");
+        }
+    },panelOption));
+};
+
+function del() {
+    var checkStatus = table.checkStatus('customerTable'),data = checkStatus.data,ids="";
+    for(var i	 in data){
+        var temp = data[i];
+        ids +=  temp.customerId + ",";
+        layer.confirm('确认删除?', { icon: 3, title: '提示' }, function (index) {
+            layer.close(index);
+            $.post(path+'customer/del',{ids:ids},function(results){
+                sucessTip('删除'+results+'个客户信息');
+                reload();
+            });
+        });
+    }
+}
+</script>
+</html>

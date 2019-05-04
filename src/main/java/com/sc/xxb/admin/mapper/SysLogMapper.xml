@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sc.xxb.admin.mapper.SysLogMapper">
+
+
+	<resultMap id="BaseResultMap" type="com.sc.xxb.admin.model.SysLog" >
+	    <id column="id" property="id" jdbcType="VARCHAR" />
+	    <result column="oper_Type" property="operType" jdbcType="VARCHAR" />
+		<result column="ser_Id" property="serId" jdbcType="VARCHAR" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="mac_Address" property="macAddress" jdbcType="VARCHAR" />
+		<result column="operdate_Time" property="operdateTime" jdbcType="TIMESTAMP" />
+	    <result column="main_Str" property="mainStr" jdbcType="VARCHAR" />
+	    <result column="user_Name" property="userName" jdbcType="VARCHAR" />
+	    <result column="oper_Result" property="operResult" jdbcType="VARCHAR" />
+	    <result column="oper_Name" property="operName" jdbcType="VARCHAR" />
+	    <result column="notes" property="notes" jdbcType="VARCHAR" />
+	    <result column="error_Message" property="errorMessage" jdbcType="VARCHAR" />
+	    <result column="user_Id" property="userId" jdbcType="VARCHAR" />
+	    <result column="detail_Str" property="detailStr" jdbcType="VARCHAR" />
+	    <result column="num" property="num" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<select id="getSysLogList"  parameterType="com.sc.xxb.admin.model.SysLog" resultMap="BaseResultMap" >
+		select * from  pub_sys_log
+		<where>
+			1 = 1
+			<if test=" operType !=null and operType !='' ">
+				and oper_Type like '%'||#{operType}||'%'
+			</if>
+			<if test=" userName !=null and userName !='' ">
+				and user_Name like '%'||#{userName}||'%'
+			</if>
+			<if test=" id !=null and id !='' ">
+				and id  = #{id}
+			</if>
+		</where>
+		ORDER BY operdate_Time DESC
+	</select>
+
+
+	<select id="getCount" parameterType="com.sc.xxb.admin.model.SysLog" resultType="java.lang.Integer">
+		select count(1) from pub_sys_log t
+		<where>
+			1 = 1
+			<if test=" operType !=null and operType !='' ">
+				and oper_Type like '%'||#{operType}||'%'
+			</if>
+			<if test=" userName !=null and userName !='' ">
+				and user_Name like '%'||#{userName}||'%'
+			</if>
+			<if test=" id !=null and id !='' ">
+				and id  = #{id}
+			</if>
+		</where>
+	</select>
+
+	<insert id="logInsert" parameterType="com.sc.xxb.admin.model.SysLog">
+		insert into pub_sys_log
+		  (id, oper_type, ser_id, mac_address, main_str, user_name, operdate_time, oper_result, oper_name, ip, notes, error_message, user_id, detail_str, num)
+		values
+		  (SEQ_SYS_LOG.NEXTVAL, #{operType}, #{serId}, #{macAddress}, #{mainStr}, #{userName}, sysdate, #{operResult}, #{operName}, #{ip}, #{notes}, #{errorMessage}, #{userId}, #{detailStr}, #{num})
+	</insert>
+
+
+</mapper>
+

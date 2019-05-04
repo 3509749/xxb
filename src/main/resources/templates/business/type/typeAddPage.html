@@ -1,0 +1,123 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<style>
+    html {
+        height: 100%;
+    //
+    让html的高度等于屏幕
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+    }
+    .layui-form-pane .layui-form-label{
+        width: 150px;
+    }
+    .layui-form-pane .layui-input-block{
+        margin-left:150px;
+    }
+</style>
+<body id="thisbody" >
+<form id="addForm" class="layui-form layui-form-pane" style="margin-top: 5px" th:object="${data}" >
+    <input hidden="hidden" name="id" th:value="*{id}"/>
+    <input type="text" name="type" th:value="*{type}"  hidden="hidden"/>
+    <!--<div class="layui-form-item">-->
+        <!--<label class="layui-form-label ">上级分类编码</label>-->
+        <!--<div class="layui-input-block">-->
+            <!--<input type="text" id="sjcdbm" th:value="*{parentCode}" readonly="readonly"  autocomplete="off" class="layui-input disabled-background-color"  />-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="layui-form-item">-->
+        <!--<label class="layui-form-label ">上级分类</label>-->
+        <!--<div class="layui-input-block">-->
+            <!--<select id="parentCode" name="parentCode" lay-search=""  lay-filter="selectEvent"     >-->
+            <!--</select>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="layui-form-item">
+        <label class="layui-form-label required">分类编码</label>
+        <div class="layui-input-block">
+            <input type="text" name="code" th:value="*{code}"  required="" lay-verify="required" placeholder="请输入分类编码" value="" autocomplete="off"  class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">分类名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" th:value="*{name}"  required="" lay-verify="required" placeholder="请输入分类名称" value="" autocomplete="off" class="layui-input"  />
+        </div>
+    </div>
+    <!--<div class="layui-form-item">-->
+        <!--<label class="layui-form-label required">分类类型</label>-->
+        <!--<div class="layui-input-block">-->
+            <!--<input type="text" name="typeName" th:value="*{typeName}"  autocomplete="off" class="layui-input"   readonly="readonly"/>-->
+            <!--<input type="text" name="type" th:value="*{type}"  hidden="hidden"/>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <div class="layui-form-item">
+        <label class="layui-form-label ">备注</label>
+        <div class="layui-input-block">
+            <input type="text" name="notes" th:value="*{notes}" required="" placeholder="请输入备注" value="" autocomplete="off" class="layui-input"  />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">排列序号</label>
+        <div class="layui-input-block">
+            <input type="text" name="seq" th:value="*{seq}" required="" lay-verify="required" placeholder="请输入排列序号" value="" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+</form>
+</body>
+<script th:inline="javascript" >
+    var data = [[${data}]];
+    layui.use('form', function(){
+        form = layui.form;
+        initParentId();
+        form.on('select(selectEvent)', function(data){
+            $("#sjcdbm").val(data.value)
+        });
+    });
+
+    function save() {
+        $.ajax({
+            type: 'POST',
+            url: path + 'basicData/update',
+            data: $("#addForm").serialize(),
+            async: false,
+            success: function (result) {
+                // if(result==1){
+                //     flag = true;
+                // }else{
+                //     flag = false;
+                // }
+                flag = result;
+            }
+        });
+        return flag;
+    }
+
+    function initParentId() {
+        $.ajax({
+            type: 'POST',
+            url: path+'common/getHtmlSelectOptionsByWhereCase',
+            data:{tableName:"XXB_BASIC_DATA",codeField : "id",nameField :"name",whereCase:"1=1","selectValue": data.parentCode},
+            async : false,
+            success: function(result) {
+                $("#parentCode").html('<option value=""></option>'+result);
+                form.render("select");
+            }
+        });
+    }
+
+
+
+    function yz(){
+        if(!Verification($("#addForm")))
+            return false;
+        else
+            return true;
+    }
+</script>
+</html>

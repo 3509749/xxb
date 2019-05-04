@@ -1,0 +1,51 @@
+server:
+  port: 80
+  context-path: /
+  tomcat:
+    max-http-post-size: 0
+    max-http-header-size: 0
+spring:
+  datasource:
+    name: test
+    url: jdbc:oracle:thin:@218.203.235.55:1521:orcl
+    username: puberp
+    password: 1
+#        url: jdbc:oracle:thin:@180.76.96.196:1521:center
+#        username: xxbcenternew
+#        password: fxrxxb$%^#@!
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: oracle.jdbc.OracleDriver
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+    content-type: text/html
+  aop:
+    auto: true
+  http:
+    multipart:
+      maxFileSize: 100Mb
+      maxRequestSize: 1000Mb
+  jmx:
+    default-domain: xxb
+logging:
+  level:
+    org:
+      com:
+        dy:
+          server:
+            mapper: debug
+      springframework: WARN
+      spring:
+        springboot:
+          dao: DEBUG
+  file: logs/spring-boot-logging.log
+
+ftp:
+  host: 180.76.121.34
+  port: 21
+  username: ftpUser
+  password: Sc123456
+  nginx: http://180.76.121.34:9090

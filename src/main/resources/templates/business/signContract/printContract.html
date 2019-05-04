@@ -1,0 +1,71 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"></head>
+<script th:src="@{/js/jq-signature.js}"></script>
+<title>打印预览</title>
+<style>
+    html {
+        height: 100%;
+    / / 让html的高度等于屏幕
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+</style>
+<body id="thisbody">
+
+<div id="addForm" class="layui-form layui-form-pane" style="margin-top: 5px;height: 100%">
+
+
+    <div id="pdfArea" style="height: 100%">
+
+    </div>
+
+
+
+    <!--<input type="text" th:value="*{serId}" name="serId" style="display: none"/>-->
+</div>
+
+
+<div id="table"></div>
+</body>
+<script th:inline="javascript">
+
+    var pdfUrl = [[${pdfUrl}]];
+    layui.use(['upload', 'element', 'laydate'], function () {
+        var $ = layui.jquery
+            , upload = layui.upload, element = layui.element, laydate = layui.laydate;
+
+
+        if (pdfUrl) {
+            $('#pdfArea').html(createFrame(path + 'pdfjs/web/viewer.html?' + 'file=/xxbContract/viewPdf?fileName=' + pdfUrl));
+        }
+
+
+    });
+
+
+
+
+    function createFrame(url) {
+
+        return '<iframe id="tab_iframe" name="tab_iframe" scrolling="no" frameborder="0"  src="'
+            + url
+            + '" style="width:100%;height:100%'
+            + ';"></iframe>';
+    }
+
+    function createHideDiv(name, value) {
+        return '<input type="text" value="' + value + '" id="' + name + '" name="' + name + '" scrolling="no" frameborder="0" style="width:100%;height:100%;display: none" />';
+    }
+
+
+
+
+</script>
+</html>

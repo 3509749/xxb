@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sc.xxb.admin.mapper.RoleMapper">
+	<resultMap id="BaseResultMap" type="com.sc.xxb.admin.model.URole" >
+	    <id column="role_Id" property="roleId" jdbcType="VARCHAR" />
+	    <result column="role_Name" property="roleName" jdbcType="VARCHAR" />
+	    <result column="notes" property="notes" jdbcType="VARCHAR" />
+	    <result column="status" property="status" jdbcType="DECIMAL" />
+	</resultMap>
+	<resultMap id="UPermissionMAP" type="com.sc.xxb.admin.model.UPermission" >
+		<id column="menu_id" property="menuId" jdbcType="VARCHAR" />
+	    <result column="menu_Name" property="menuName" jdbcType="VARCHAR" />
+	    <result column="menu_Type" property="menuType" jdbcType="VARCHAR" />
+	    <result column="PARENT_ID" property="parentId" jdbcType="VARCHAR" />
+	    <result column="URL" property="url" jdbcType="VARCHAR" />
+	    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+	    <result column="ORDER_NUM" property="orderNum" />
+	    <association property="childs" column="menu_id" javaType="java.util.List" select="queryChild" />
+  	</resultMap>
+  	
+  	
+  	<resultMap id="BaseResultMap2" type="com.sc.xxb.admin.model.RoleResource" >
+	    <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+	    <result column="MENU_ID" property="menuId" jdbcType="VARCHAR" />
+	</resultMap>
+  	
+  	<select id="getRole"  parameterType="com.sc.xxb.admin.model.URole" resultMap="BaseResultMap" >
+		  select * from pub_ROLE t
+		  <where>
+		   1 = 1
+			<if test=" roleId !=null and roleId !=''">
+			   and t.role_id = #{roleId}
+			</if>
+			  <if test=" roleName !=null and roleName !=''">
+				  and t.role_name like '%'||#{roleName}||'%'
+			  </if>
+		  </where>
+	</select>
+	
+	
+	<insert id="insertRole" parameterType="com.sc.xxb.admin.model.URole">
+		insert into pub_ROLE
+		(role_id, role_name, NOTES,STATUS)
+		values (SEQ_ROLE.NEXTVAL,
+		#{roleName,jdbcType=VARCHAR},
+		#{notes,jdbcType=VARCHAR},
+		#{status,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateRole" parameterType="com.sc.xxb.admin.model.URole">
+		update pub_ROLE
+			set 
+				role_name = #{roleName,jdbcType=VARCHAR},
+				notes = #{notes,jdbcType=VARCHAR},
+				status = #{status,jdbcType=VARCHAR}
+				where role_id = #{roleId,jdbcType=VARCHAR}
+	</update>
+	
+	
+	
+	<delete id="deleteRoles">
+		delete pub_ROLE  where role_id in
+		<foreach collection="array" item="id" index="index"  
+         open="(" close=")" separator=",">  
+        	#{id}  
+		</foreach>  
+	</delete>
+  	
+  	<select id="getRoleCount" parameterType="com.sc.xxb.admin.model.URole" resultType="java.lang.Integer">
+		SELECT count(1) from pub_ROLE t
+		<where>
+		  	<if test=" roleName!=null and roleName !=''">
+			   t.role_name like '%'||#{roleName}||'%'
+			</if>
+	    </where>
+	</select>
+
+
+	<select id="getAllResource"   resultMap="UPermissionMAP">
+		select * from pub_MENU
+	</select>
+
+
+
+	
+	<select id="getResource" parameterType="java.lang.String"  resultMap="UPermissionMAP">
+		select t1.* from pub_MENU t1 left join pub_ROLE_RIGHT t2 on t2.menu_id = t1.menu_id where t2.role_id =  #{id}
+	</select>
+  	
+  	
+	<insert id="insertResourceRole" parameterType="com.sc.xxb.admin.model.RoleResource">
+		insert into pub_ROLE_RIGHT
+		  (id, role_id, menu_id)
+		values
+		  (seq_role_menu.nextval, #{roleId}, #{menuId})
+	</insert>
+	
+	<delete id="deleteResourceRole">
+		delete pub_ROLE_RIGHT  where  role_id in
+		 <foreach collection="array" item="id" index="index"  
+         open="(" close=")" separator=",">  
+        	#{id}  
+		</foreach> 
+	</delete>
+
+
+
+	<delete id="deleteUserRole">
+		delete pub_R_USER_ROLE  where  user_id in
+		<foreach collection="array" item="id" index="index"
+				 open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+
+ 	<select id="getUserRole" resultMap="BaseResultMap" >
+		  select  b.* from pub_R_USER_ROLE a,pub_ROLE b where  a.role_id=b.role_id and  a.user_id = #{userId}
+	</select>
+
+
+	<select id="getNotUserRole" resultMap="BaseResultMap" >
+		select role_id,role_name from pub_ROLE t where t.role_id not in (select  t.role_id    from v_role_right  t where t.user_id = #{userId} )
+	</select>
+
+	<select id="listByUserId" resultMap="UPermissionMAP">
+		select  distinct(TR.menu_id) as menu_id,
+        TR.menu_name,
+        TR.menu_type,
+        TR.PARENT_ID, 
+        TR.URL, 
+        TR.NOTES, 
+        TR.ORDER_NUM
+	    FROM  pub_MENU TR ,pub_ROLE_RIGHT RRU , pub_ROLE ROLE
+	    WHERE TR.menu_id = RRU.menu_id
+	      AND RRU.ROLE_ID IN(
+	          select ROLE_ID  from pub_R_USER_ROLE t   where t.user_id=#{value}
+	      )
+	    AND RRU.ROLE_ID = ROLE.ROLE_ID
+	    ORDER BY TR.ORDER_NUM ASC
+	</select>
+	
+	<select id="listParent" resultMap="UPermissionMAP">
+		select  distinct(TR.menu_id) as menu_id,
+        TR.menu_name,
+        TR.menu_type,
+        TR.PARENT_ID, 
+        TR.URL, 
+        TR.NOTES, 
+        TR.ORDER_NUM
+      FROM  pub_MENU TR  where TR.PARENT_ID is null
+      ORDER BY TR.ORDER_NUM ASC
+	</select>
+	<select id="listChild" resultMap="UPermissionMAP">
+		select  distinct(TR.menu_id) as menu_id,
+        TR.menu_name,
+        TR.menu_type,
+        TR.PARENT_ID, 
+        TR.URL, 
+        TR.NOTES, 
+        TR.ORDER_NUM
+      FROM  pub_MENU TR  where TR.PARENT_ID is  null
+      ORDER BY TR.ORDER_NUM ASC
+	</select>
+	<select id="queryChild" parameterType="java.lang.String" resultMap="UPermissionMAP">
+		select * from pub_MENU t where t.PARENT_ID = #{id} order by order_num
+	</select>
+
+
+	<insert id="insertUserRoles" parameterType="java.util.List">
+		insert into pub_R_USER_ROLE (id,user_id,role_id)
+		select  SEQ_R_USER_ROLE.NEXTVAL,cd.* from(
+		<foreach collection="list" item="item" index="index"  close=")" open="(" separator="union">
+			select
+			#{item.userId},#{item.roleId}
+			from dual
+		</foreach>
+		) cd
+	</insert>
+
+</mapper>
+

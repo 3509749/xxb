@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+
+<title>客户审核</title>
+<style>
+html{
+height:100%;//让html的高度等于屏幕
+}
+body{
+height:100%;
+margin:0;
+overflow-x:hidden;
+overflow-y:hidden;
+}
+.layui-inline{
+	width: 100%;
+	padding-top: 10px;
+ }
+
+.inline3{
+	float: left;
+	width: 32%;
+	padding-left: 10px;
+}
+</style>
+<body id="thisbody">
+<form id="addForm" class="layui-form layui-form-pane" th:object="${data}"  style="margin-top: 5px">
+	<div class="layui-row">
+		<div >
+			<div class="layui-inline">
+				<div class="inline3" >
+					<label class="layui-form-label ">用户名</label>
+					<div class="layui-input-block">
+						<input type="text" name="userName" th:value="*{userName}" disabled="disabled"   autocomplete="off" class="disabled-background-color layui-input"  />
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">昵称</label>
+					<div class="layui-input-block">
+						<input type="text" name="nickName" th:value="*{nickName}" disabled="disabled"  class="disabled-background-color layui-input" />
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">类型</label>
+					<div class="layui-input-block">
+						<select id="userType" name="userType" disabled="disabled"   class="disabled-background-color"  >
+							<option></option>
+							<option th:each="item,itemStat : ${userType}" th:value="${item.code}" th:text="${item.name}" th:selected="${item.code} eq *{userType}?'true':'false'"  ></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<div class="inline3"  >
+					<label class="layui-form-label ">生日</label>
+					<div class="layui-input-block">
+						<input type="text" id="birthday" name="birthday" th:value="*{birthday}" disabled="disabled"  autocomplete="off" class="disabled-background-color layui-input"   />
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">密码</label>
+					<div class="layui-input-block">
+						<input type="password" name="password" th:value="*{password}" disabled="disabled"  autocomplete="off" class="disabled-background-color layui-input"  />
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">重复密码</label>
+					<div class="layui-input-block">
+						<input type="password" name="password" th:value="*{password}" disabled="disabled" autocomplete="off" class="disabled-background-color layui-input"  />
+					</div>
+				</div>
+			</div>
+			<div class="layui-inline">
+				<div class="inline3"  >
+					<label class="layui-form-label ">省</label>
+					<div class="layui-input-block">
+						<select id="province"  name="province" disabled="disabled"   class="disabled-background-color"    >
+							<option></option>
+						</select>
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">市</label>
+					<div class="layui-input-block">
+						<select id="city"  name="city"  disabled="disabled"  class="disabled-background-color"    >
+							<option></option>
+						</select>
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">区</label>
+					<div class="layui-input-block">
+						<select id="county" name="county" disabled="disabled"   class="disabled-background-color"     >
+							<option></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<div class="inline3"  >
+					<label class="layui-form-label ">学员姓名</label>
+					<div class="layui-input-block">
+						<input type="text" name="studentName" th:value="*{studentName}" disabled="disabled"    autocomplete="off" class="disabled-background-color layui-input"   />
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">身份证</label>
+					<div class="layui-input-block">
+						<input type="text" name="studentCardId" th:value="*{studentCardId}"   disabled="disabled" autocomplete="off" class="disabled-background-color layui-input"   />
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">性别</label>
+					<div class="layui-input-block">
+						<select  name="sex"     disabled="disabled"  class="disabled-background-color" >
+							<option value="1" th:selected="'1' eq *{sex}?'true':'false'"  >男</option>
+							<option value="2" th:selected="'2' eq *{sex}?'true':'false'" >女</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-inline">
+				<div class="inline3"  >
+					<label class="layui-form-label ">学历</label>
+					<div class="layui-input-block">
+						<select  name="education"   disabled="disabled"  class="disabled-background-color"  >
+							<option value="1" th:selected="'1' eq *{education}?'true':'false'" >初中</option>
+							<option value="2" th:selected="'2' eq *{education}?'true':'false'" >高中</option>
+							<option value="3" th:selected="'3' eq *{education}?'true':'false'" >大专</option>
+							<option value="4" th:selected="'4' eq *{education}?'true':'false'" >本科</option>
+							<option value="5" th:selected="'5' eq *{education}?'true':'false'" >研究生</option>
+							<option value="6" th:selected="'6' eq *{education}?'true':'false'" >硕士</option>
+						</select>
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">毕业时间</label>
+					<div class="layui-input-block">
+						<input type="text" id="graduatedTime" name="graduatedTime" th:value="*{graduatedTime}"   disabled="disabled" class="disabled-background-color layui-input"   />
+					</div>
+				</div>
+				<div class="inline3"  >
+					<label class="layui-form-label ">电话</label>
+					<div class="layui-input-block">
+						<input type="text" name="phone" th:value="*{phone}"   disabled="disabled" class="disabled-background-color layui-input"   />
+					</div>
+				</div>
+			</div>
+			<div class="layui-inline">
+				<div class="inline3"  >
+					<label class="layui-form-label ">邮箱</label>
+					<div class="layui-input-block">
+						<input type="text" name="email" th:value="*{email}"   disabled="disabled" class="disabled-background-color layui-input"   />
+					</div>
+				</div>
+				<div  style="width: 65%;float: left;padding-left: 10px"  >
+					<label class="layui-form-label ">个人简介</label>
+					<div class="layui-input-block">
+						<input type="text" name="profile" th:value="*{profile}"   disabled="disabled" class="disabled-background-color layui-input"   />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-inline" >
+			<div class="layui-upload inline3" >
+				<div class="layui-upload-list">
+					<img class="layui-upload-img"    th:src="null eq *{cardPic1}?@{/img/sfzzm.png}:*{cardPic1}" id="img1"  style="border:1px dashed rgba(0,0,0,0.18); height:130px;width:220px" />
+					<p id="demoText1" ></p>
+				</div>
+			</div>
+			<div class="layui-upload inline3" >
+				<div class="layui-upload-list">
+					<img class="layui-upload-img"    th:src="null eq *{cardPic2}?@{/img/sfzbm.png}:*{cardPic2}" id="img2" style="border:1px dashed rgba(0,0,0,0.18); height:130px;width:220px" />
+					<p id="demoText2" ></p>
+				</div>
+			</div>
+			<div class="layui-upload inline3" >
+				<div class="layui-upload-list">
+					<img class="layui-upload-img"    th:src="null eq *{diplomas}?@{/img/byz.png}:*{diplomas}" id="img3" style="border:1px dashed rgba(0,0,0,0.18); height:130px;width:220px" />
+					<p id="demoText3" ></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<input type="hidden" name="cardPic1" id="cardPic1" th:value="*{cardPic1}" />
+	<input type="hidden" name="cardPic2" id="cardPic2" th:value="*{cardPic2}" />
+	<input type="hidden" name="diplomas" id="diplomas" th:value="*{diplomas}" />
+	<input type="hidden" name="userId" id="userId" th:value="*{userId}" />
+</form>
+</body>
+<script th:inline="javascript">
+	var data = [[${data}]];
+	var table;
+	var imgflag = true;
+    layui.use(['upload', 'table','laydate','form'], function() {
+		upload = layui.upload;
+        laydate = layui.laydate;
+        table= layui.table;
+        form= layui.form;
+        initProvince();
+        initCity(data.province);
+        initCounty(data.city);
+
+        form.on('select(province)', function(data){
+            initCity(data.value);
+        });
+
+        form.on('select(city)', function(data){
+            initCounty(data.value);
+        });
+        laydate.render({
+            elem: '#graduatedTime',
+            type: 'date',
+            value: data.graduatedTime==null?new Date():new Date(data.graduatedTime)
+        });
+        laydate.render({
+            elem: '#birthday',
+            type: 'date',
+            value: data.birthday==null?new Date():new Date(data.birthday)
+        });
+
+        formFocus($("#addForm"));
+    });
+
+
+
+    function save() {
+        var flag;
+        $.ajax({
+            type: 'POST',
+            url: path + 'xxbUser/check',
+			data:{id:data.userId},
+            async : false,
+            success: function(result) {
+                if(result==1){
+                    flag = true;
+                }else{
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+    }
+
+    function yz(){
+        if(!Verification($("#addForm")))
+            return false;
+        else
+            return true;
+    }
+
+    function initProvince() {
+        $.ajax({
+            type: 'POST',
+            url: path+'common/getHtmlSelectOptionsByWhereCase',
+            data:{tableName:"xxb_area",codeField : "area_code",nameField :"area_name",whereCase:"area_code like '%0000'","selectValue": data.province},
+            success: function(result) {
+                $("#province").html('<option value=""></option>'+result);
+                form.render("select");
+            }
+        });
+    }
+
+    function initCity(code) {
+        code = code.substr(0,2)+"%";
+        $.ajax({
+            type: 'POST',
+            url: path+'common/getHtmlSelectOptionsByWhereCase',
+            data:{tableName:"xxb_area",codeField : "area_code",nameField :"area_name",whereCase:"area_code not like '%0000' and area_code like '%00' and area_code like '"+code+"'","selectValue": data.city},
+            success: function(result) {
+                $("#city").html('<option value=""></option>'+result);
+                form.render("select");
+            }
+        });
+    }
+
+    function initCounty(code) {
+        code = code.substr(0,4)+"%";
+        $.ajax({
+            type: 'POST',
+            url: path+'common/getHtmlSelectOptionsByWhereCase',
+            data:{tableName:"xxb_area",codeField : "area_code",nameField :"area_name",whereCase:" area_code not like '%00' and area_code like '"+code+"'","selectValue": data.county},
+            success: function(result) {
+                $("#county").html('<option value=""></option>'+result);
+                form.render("select");
+            }
+        });
+    }
+
+</script>
+</html>

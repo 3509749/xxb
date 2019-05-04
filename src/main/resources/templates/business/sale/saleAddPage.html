@@ -1,0 +1,445 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"></head>
+<style>
+    html {
+        height: 100%;
+    / / 让html的高度等于屏幕
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+    }
+
+    .layui-form-pane .layui-form-label {
+        width: 150px;
+    }
+
+    .layui-form-pane .layui-input-block {
+        margin-left: 150px;
+    }
+</style>
+<body id="thisbody">
+<form id="addForm" class="layui-form layui-form-pane" style="margin-top: 5px" th:object="${data}">
+    <input hidden="hidden" name="saleId" th:value="*{saleId}"/>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label required">中文姓名</label>
+            <div class="layui-input-block">
+                <input type="text" id="saleName" name="saleName" th:value="*{saleName}" autocomplete="off"
+                       required="" lay-verify="required"
+                       class="layui-input"/>
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label required">性别</label>
+            <div class="layui-input-block">
+                <select id="sex" name="sex" lay-search="" lay-filter="selectEvent">
+                    <option value="男" selected="selected">男
+                    </option>
+                    <option value="女">女
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label required">身份证号</label>
+            <div class="layui-input-block">
+                <input type="text" name="cardId" th:value="*{cardId}" required="" lay-verify="required"
+                       placeholder="请输入身份证"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label required">电子邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" name="email" th:value="*{email}" required="" lay-verify="required"
+                       placeholder="请输入电子邮箱"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label required">手机号码</label>
+            <div class="layui-input-block">
+                <input type="text" name="phone" th:value="*{phone}" autocomplete="off" class="layui-input" required=""
+                       lay-verify="required"
+                       placeholder="请输入手机号码"/>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label ">婚姻状况</label>
+            <div class="layui-input-block">
+                <select id="maritalStatus" name="maritalStatus" lay-search="" lay-filter="selectEvent">
+                    <option value="未婚">未婚
+                    </option>
+                    <option value="已婚">已婚
+                    </option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label ">最高学历</label>
+            <div class="layui-input-block">
+                <select id="education" name="education" lay-search="" lay-filter="selectEvent">
+                    <option value="小学">小学
+                    </option>
+                    <option value="初中">初中
+                    </option>
+                    <option value="高中">高中
+                    </option>
+                    <option value="专科">专科
+                    </option>
+                    <option value="本科">本科
+                    </option>
+                    <option value="硕士">硕士
+                    </option>
+                    <option value="博士">博士
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label ">毕业院校</label>
+            <div class="layui-input-block">
+                <input type="text" name="graduatedSchool" th:value="*{graduatedSchool}"
+                       placeholder="请输入毕业院校"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label ">所属部门</label>
+            <div class="layui-input-block">
+                <input type="text" name="deptName" th:value="*{deptName}"
+                       placeholder="请输入所属部门"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label ">职务</label>
+            <div class="layui-input-block">
+                <select id="duties" name="duties" lay-search="" lay-filter="selectEvent">
+                    <option value="销售代表" selected="selected">销售代表
+                    </option>
+                    <option value="普通销售">普通销售
+                    </option>
+
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label required">第一紧急联系人姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="contactsName1" th:value="*{contactsName1}" required="" lay-verify="required"
+                       placeholder="请输入第一紧急联系人姓名"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label required">第一紧急联系人电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="contactsPhone1" th:value="*{contactsPhone1}" required="" lay-verify="required"
+                       placeholder="请输入第一紧急联系人电话"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label ">第二紧急联系人姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="contactsName2" th:value="*{contactsName2}"
+                       placeholder="请输入第二紧急联系人姓名"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label ">第二紧急联系人电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="contactsPhone2" th:value="*{contactsPhone2}"
+                       placeholder="请输入第二紧急联系人电话"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label ">政治面貌</label>
+            <div class="layui-input-block">
+
+                <select id="politicalOrientation" name="politicalOrientation" lay-search="" lay-filter="selectEvent">
+                    <option value="群众" selected="selected">群众
+                    </option>
+                    <option value="共青团员">共青团员
+                    </option>
+                    <option value="中共党员">中共党员
+                    </option>
+
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label ">身份证地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="cardAddress" th:value="*{cardAddress}"
+                       placeholder="请输入身份证地址"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label required">现住址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address" th:value="*{address}" required="" lay-verify="required"
+                       placeholder="请输入现住址"
+                       value="" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label ">所属店面</label>
+            <div class="layui-input-block">
+                <select id="shopName" name="shopName" lay-search="" lay-filter="selectEvent">
+
+
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label ">身份证正面</label>
+
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn" id="btn1">
+                <i class="layui-icon">&#xe67c;</i>请选择图片
+            </button>
+            <input hidden="hidden" name="cardPic1" id="cardPic1" th:value="*{cardPic1}"/>
+        </div>
+
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" id="img_list1">
+
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label ">身份证反面</label>
+
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn" id="btn2">
+                <i class="layui-icon">&#xe67c;</i>请选择图片
+            </button>
+            <input hidden="hidden" name="cardPic2" id="cardPic2" th:value="*{cardPic2}"/>
+        </div>
+
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" id="img_list2">
+
+        </div>
+    </div>
+
+</form>
+</body>
+<script th:inline="javascript">
+    var data = [[${data}]];
+    layui.use(['form', 'upload'], function () {
+        form = layui.form;
+        upload = layui.upload
+
+        if (data.cardPic1 != null) {
+            if (data.cardPic1 != '') {
+                $('#img_list1').html('<img src="' + data.cardPic1 + '" style="width: 180px;height: 100px"/>');
+            }
+        }
+        if (data.cardPic2 != null) {
+            if (data.cardPic2 != '') {
+                $('#img_list2').html('<img src="' + data.cardPic2 + '" style="width: 180px;height: 100px"/>');
+            }
+        }
+
+        var uploadInst1 = upload.render({
+            elem: '#btn1'
+            , url: path + 'common/myupload/img'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                else {
+                    //上传成功
+                    if (res.flag) {
+                        $('#img_list1').html('<img src="' + res.url + '" style="width: 180px;height: 100px"/>');
+                        $('#cardPic1').val(res.url);
+
+                    } else {
+                        return layer.msg('上传失败');
+                    }
+
+                }
+
+            }
+            , accept: 'file'
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst1.upload();
+                });
+            }
+        });
+
+        var uploadInst2 = upload.render({
+            elem: '#btn2'
+            , url: path + 'common/myupload/img'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                else {
+                    //上传成功
+                    if (res.flag) {
+                        $('#img_list2').html('<img src="' + res.url + '" style="width: 180px;height: 100px"/>');
+                        $('#cardPic2').val(res.url);
+
+                    } else {
+                        return layer.msg('上传失败');
+                    }
+
+                }
+
+            }
+            , accept: 'file'
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst2.upload();
+                });
+            }
+        });
+        initSelect();
+        $('.layui-input-block').each(function (i, item) {
+            $(item).css('width', '191px');
+        });
+
+
+    });
+
+    function save() {
+        $.ajax({
+            type: 'POST',
+            url: path + 'sale/update',
+            data: $("#addForm").serialize(),
+            async: false,
+            success: function (result) {
+                // if(result==1){
+                //     flag = true;
+                // }else{
+                //     flag = false;
+                // }
+                flag = result;
+            }
+        });
+        return flag;
+    }
+
+    function initSelect() {
+
+
+        $.ajax({
+            type: 'POST',
+            url: path + 'common/getHtmlSelectOptionsByWhereCase',
+            data: {
+                tableName: "xxb_shopinfo",
+                codeField: "shop_name",
+                nameField: "shop_name",
+                whereCase: "1=1",
+                "selectValue": data.shopName
+            },
+            async: false,
+            success: function (result) {
+                $("#shopName").html('<option value=""></option>' + result);
+                form.render("select");
+            }
+        });
+
+
+        if (data.saleId != null) {
+            if (data.saleId != '') {
+                $('.layui-this').removeClass("layui-this");
+                //alert(data.education);
+                // $('#maritalStatus option[value="' + data.maritalStatus + '"]').attr('selected', 'true');
+                // $('#sex option[value="' + data.sex + '"]').attr('selected', 'true');
+                //$('#education option[value="'+data.education+'"]').attr('selected','true');
+                //$('#education').find('option[value="' + data.education + '"]').attr('selected', 'selected');
+                $("#education").next().find('div input').val(data.education);
+                $("#education").next().find('dl dd[lay-value="' + data.education + '"]').addClass('layui-this');
+
+                $("#maritalStatus").next().find('div input').val(data.maritalStatus);
+                $("#maritalStatus").next().find('dl dd[lay-value="' + data.maritalStatus + '"]').addClass('layui-this');
+
+                $("#sex").next().find('div input').val(data.sex);
+                $("#sex").next().find('dl dd[lay-value="' + data.sex + '"]').addClass('layui-this');
+
+                $("#politicalOrientation").next().find('div input').val(data.politicalOrientation);
+                $("#politicalOrientation").next().find('dl dd[lay-value="' + data.politicalOrientation + '"]').addClass('layui-this');
+
+                $("#duties").next().find('div input').val(data.duties);
+                $("#duties").next().find('dl dd[lay-value="' + data.duties + '"]').addClass('layui-this');
+
+
+            }
+        }
+    }
+
+
+    function yz() {
+        if (!Verification($("#addForm")))
+            return false;
+        else
+            return true;
+    }
+</script>
+</html>

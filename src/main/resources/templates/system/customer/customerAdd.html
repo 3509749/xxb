@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+
+<title>客户新增</title>
+<style>
+html{
+height:100%;//让html的高度等于屏幕
+}
+body{
+height:100%;
+margin:0;
+overflow-x:hidden;
+overflow-y:hidden;
+}
+.layui-inline{
+	width: 100%;
+	padding-top: 10px;
+ }
+</style>
+<body id="thisbody">
+<form id="addForm" class="layui-form layui-form-pane" th:object="${data}"  style="margin-top: 5px">
+	<div class="layui-row">
+		<div style="width: 69%;float: left;">
+			<div class="layui-inline ">
+				<label class="layui-form-label required">客户姓名</label>
+				<div class="layui-input-block">
+					<input type="text"  name="customerName"  id="customerName" th:value="*{customerName}" lay-verify="required"  class="layui-input "  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label required">客户类型</label>
+				<div class="layui-input-block" >
+					<select id="customerType" name="customerType" lay-verify="required" lay-search=""    >
+						<option value="1">个人</option>
+						<option value="0">企业</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label required">证件号</label>
+				<div class="layui-input-block">
+					<input type="text"  name="cardId"  id="cardId" th:value="*{cardId}"  class="layui-input "  placeholder="客户（身份证号/营业执照号）" />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label  ">联系电话</label>
+				<div class="layui-input-block">
+					<input type="text"  name="phone"  id="phone" th:value="*{phone}"  class="layui-input "  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label">联系地址</label>
+				<div class="layui-input-block">
+					<input type="text"  name="address" th:value="*{address}"   class="layui-input "  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label">开户行</label>
+				<div class="layui-input-block">
+					<input type="text"   name="bankName" th:value="*{bankName}"  class="layui-input "  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label">银行卡号</label>
+				<div class="layui-input-block">
+					<input type="text" name="bankCardId"  th:value="*{bankCardId}"  class="layui-input "  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label">开户名</label>
+				<div class="layui-input-block">
+					<input type="text"  name="bankCardName" th:value="*{bankCardName}"   class="layui-input "  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label">更新时间</label>
+				<div class="layui-input-block">
+					<input type="text"  id="updateTime"  disabled="disabled" onclick="javascrpt:void(0)"  class="layui-input disabled-background-color"  />
+				</div>
+			</div>
+		</div>
+		<div style="width: 30%;float: left;margin-top: -7px">
+			<div class="layui-upload" >
+				<div class="layui-upload-list">
+					<img class="layui-upload-img"    th:src="null eq *{cardpic1}?@{/img/sfzzm.png}:*{cardfullpic1}" id="img1"  style="border:1px dashed rgba(0,0,0,0.18); height:190px;width:300px" />
+					<p id="demoText1" ></p>
+				</div>
+				<button type="button" class="layui-btn" readonly="readonly" id="img1button">上传图片</button>
+			</div>
+			<div class="layui-upload" >
+				<div class="layui-upload-list">
+					<img class="layui-upload-img"    th:src="null eq *{cardpic2}?@{/img/sfzbm.png}:*{cardfullpic2}" id="img2" style="border:1px dashed rgba(0,0,0,0.18); height:190px;width:300px" />
+					<p id="demoText2" ></p>
+				</div>
+				<button type="button" class="layui-btn" readonly="readonly" id="img2button">上传图片</button>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" name="cardpic1" id="cardpic1" th:value="*{cardpic1}" />
+	<input type="hidden" name="cardpic2" id="cardpic2" th:value="*{cardpic2}" />
+	<input type="hidden" name="customerId" id="customerId" th:value="*{customerId}" />
+</form>
+</body>
+<script th:inline="javascript">
+	var data = [[${data}]];
+	var table;
+	var imgflag = true;
+    layui.use(['upload', 'table','laydate','form'], function() {
+		upload = layui.upload;
+        laydate = layui.laydate;
+        table= layui.table;
+        $("#updateTime").html(data)
+        laydate.render({
+            elem: '#updateTime',
+            type: 'datetime',
+            value: data.updateTime==null?new Date():new Date(data.updateTime)
+        });
+        var uploadInst = upload.render({
+            elem: '#img1button'
+            ,url: path + 'common/upload/img'
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+                    imgflag = false;
+                    $('#img1').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                imgflag = true;
+                if(!res.flag)
+                    failTip("上传失败");
+                else{
+					$("#cardpic1").val(res.path+"/"+res.name);}
+            }
+            ,error: function(){
+                var demoText = $('#demoText1');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+        var uploadInst2 = upload.render({
+            elem: '#img2button'
+            ,url: path + 'common/upload/img'
+            ,before: function(obj){
+                imgflag = false;
+                obj.preview(function(index, file, result){
+                    $('#img2').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                imgflag =true;
+                if(!res.flag)
+                    failTip("上传失败");
+                else{
+                    $("#cardpic2").val(res.path+"/"+res.name);}
+            }
+            ,error: function(){
+                var demoText = $('#demoText2');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst2.upload();
+                });
+            }
+        });
+        formFocus($("#addForm"));
+    });
+
+
+
+    function save() {
+        var flag;
+        var obj = $("#addForm").form2json();
+        $.ajax({
+            type: 'POST',
+            url: path + 'customer/add',
+            data : obj,
+            async : false,
+            success: function(result) {
+                if(result==1){
+                    flag = true;
+                }else{
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+    }
+
+    function yz(){
+		if(!imgflag){
+            failTip("图片尚未上传完成");
+            return false;
+		}
+        if(!Verification($("#addForm")))
+            return false;
+        else
+            return true;
+    }
+
+</script>
+</html>

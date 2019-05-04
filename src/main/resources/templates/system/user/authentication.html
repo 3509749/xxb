@@ -1,0 +1,173 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head th:replace="baseJs::header"  ></head>
+<link th:href="@{/css/css.css}"   rel="stylesheet" />
+
+<body >
+<form id="addForm">
+    <div class="page" style="background:#fff;">
+        <div class="center">
+            <table cellpadding="0" cellspacing="0" class="personal_tab">
+                <tr>
+                    <th style="height:180px;"><span class="red">*</span>身份证照片</th>
+                    <td class="input_photo">
+                        <div class="picture">
+                            <a id="img1button" href="#"><img id="img1" src="../img/no_picture.png" style="width: 210px;height: 120px"/></a>
+                            <p style="position:absolute; bottom:-80px; left:96px;">正面</p>
+                        </div>
+                        <div class="picture">
+                            <a id="img2button" href="#"><img id="img2" src="../img/no_picture.png" style="width: 210px;height: 120px"/></a>
+                            <p style="position:absolute; bottom:-80px; left:96px;">反面</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span class="red">*</span>学历证明</th>
+                    <td class="input_photo">
+                        <div class="picture">
+                            <a id="img3button" href="#"><img id="img3" src="../img/no_picture.png" style="width: 210px;height: 120px"/></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span class="red">*</span>寸照</th>
+                    <td class="input_photo">
+                        <div class="picture">
+                            <a href="#"><img src="../img/no_picture.png"/></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <input type="hidden" name="cardPic1" id="cardPic1"  />
+    <input type="hidden" name="cardPic2" id="cardPic2"  />
+    <input type="hidden" name="diplomas" id="diplomas"  />
+</form>
+</body>
+<script th:inline="javascript">
+    var table;
+    var imgflag = true;
+    var form;
+    layui.use(['upload', 'table','laydate','form'], function() {
+        upload = layui.upload;
+        laydate = layui.laydate;
+        table= layui.table;
+        form= layui.form;
+        var imgflag = true;
+
+        form.on('select(province)', function(data){
+            $("#county").html("")
+            initCity(data.value);
+        });
+
+        form.on('select(city)', function(data){
+            initCounty(data.value);
+        });
+
+        var uploadInst = upload.render({
+            elem: '#img1button'
+            ,url: path + 'common/upload/img'
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+                    imgflag = false;
+                    $('#img1').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                imgflag = true;
+                if(!res.flag)
+                    failTip("上传失败");
+                else{
+                    $("#cardPic1").val(res.url);}
+            }
+            ,error: function(){
+                var demoText = $('#demoText1');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+        var uploadInst2 = upload.render({
+            elem: '#img2button'
+            ,url: path + 'common/upload/img'
+            ,before: function(obj){
+                imgflag = false;
+                obj.preview(function(index, file, result){
+                    $('#img2').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                imgflag =true;
+                if(!res.flag)
+                    failTip("上传失败");
+                else{
+                    $("#cardPic2").val(res.url);}
+            }
+            ,error: function(){
+                var demoText = $('#demoText2');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst2.upload();
+                });
+            }
+        });
+        var uploadInst3 = upload.render({
+            elem: '#img3button'
+            ,url: path + 'common/upload/img'
+            ,before: function(obj){
+                imgflag = false;
+                obj.preview(function(index, file, result){
+                    $('#img3').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                imgflag =true;
+                if(!res.flag)
+                    failTip("上传失败");
+                else{
+                    $("#diplomas").val(res.url);}
+            }
+            ,error: function(){
+                var demoText = $('#demoText3');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst2.upload();
+                });
+            }
+        });
+    });
+
+    function save() {
+        var flag;
+        var obj = $("#addForm").form2json();
+        $.ajax({
+            type: 'POST',
+            url: path + 'xxbUser/add3',
+            data : obj,
+            async : false,
+            success: function(result) {
+                if(result==1){
+                    flag = true;
+                }else{
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+    }
+
+    function yz(){
+        if(!imgflag){
+            failTip("图片尚未上传完成");
+            return false;
+        }
+        if(!Verification($("#addForm2")))
+            return false;
+        else
+            return true;
+    }
+</script>
+</html>

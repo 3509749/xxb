@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<style>
+html {
+	height: 100%;
+	//
+	让html的高度等于屏幕
+}
+
+body {
+	height: 100%;
+	margin: 0;
+}
+</style>
+<body id="thisbody">
+	<div class="content-header" id="header">
+		<div class="layui-btn-group">
+		</div>
+		<div class="layui-inline" style="float:right;">
+			<div class="layui-inline">
+				<input type="text" id="searchValue" class="layui-input layui-input-search" placeholder="操作员"></input>
+			</div>
+			<div class="layui-inline">
+				<a class="layui-btn" onclick="reload()"><i class="layui-icon">&#xe615;</i> 查询</a>
+			</div>
+
+		</div>
+	</div>
+	<hr />
+	<div id="table"  ></div>
+	<script type="text/html" id="barDemo">
+		<a class="layui-btn layui-btn-mini" onclick="detailPage('{{ d.id }}')">详情</a>
+	</script>
+</body>
+<script>
+var h=$("#thisbody").height()-$("#header").height()-25;
+var w=($("#table").width() -170)/6;
+
+var panelOption = {
+	      type: 2 ,
+	      area: ['800px', '500px'],
+	      shade: 0.3,
+	      scrollbar: false,
+	      maxmin: false,
+	      offset: '50px'
+}
+
+var table;
+layui.use(['layer', 'table'], function(){
+	table= layui.table;
+	layui.table.render({
+			id : 'sysLogTable',
+	    	elem: '#table',
+	        url: path + 'sysLog/getSysLogData',
+	        height: h,
+	        cols: [[ //标题栏
+	          	{field: 'operType', title: '操作类型',  width: '10%',align:'center'},
+	          	{field: 'operName', title: '操作实例',  width: '50%',align:'center'},
+                {field: 'userName', title: '操作员',  width: '10%',align:'center'},
+	          	{field: 'operdateTime', title: '日期',  width: '20%',align:'center',templet: function(d){
+                        return new Date(d.operdateTime).Format("yyyy-MM-dd  hh:mm:ss");
+                    }},
+				{fixed: 'right', title: '操作', width: '8%',toolbar: '#barDemo',align:'center'}
+	        ]],
+	        skin: 'row', //表格风格
+	        even: true,
+	        page: true, //是否显示分页
+	        limits: [15,20,50],
+	        limit: 15, //每页默认显示的数量
+	        loading: true, //请求数据时，是否显示loading
+	        done: function(res, curr, count){
+	    	  }
+	      });
+	   	$("#searchValue").keydown(function(e){
+	    var keyCode =window.event? e.keyCode:e.which;
+	    if(keyCode== 13){
+	    	reload();
+	    }
+		})
+});
+
+function reload(){
+    table.reload("sysLogTable", {
+        where: {
+            xm: $("#searchValue").val()
+        }
+    });
+} ;
+
+function detailPage(id){
+    layer.open(extend({
+        id :"detailPage",
+        title: '日志详情',
+        content: path + 'sysLog/sysLogDetailPage?id='+id,
+        btn: ['关闭'],
+        yes: function(index, layero){
+            layer.close(index);
+		}
+    },panelOption));
+};
+
+</script>
+</html>

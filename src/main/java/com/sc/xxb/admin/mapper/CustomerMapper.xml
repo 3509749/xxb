@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sc.xxb.admin.mapper.CustomerMapper">
+
+	<resultMap id="BaseResultMap" type="com.sc.xxb.admin.model.Customer" >
+	    <id column="customer_Id" property="customerId" jdbcType="VARCHAR" />
+	    <result column="customer_Name" property="customerName" jdbcType="VARCHAR" />
+		<result column="customer_Type" property="customerType" jdbcType="VARCHAR" />
+		<result column="card_Id" property="cardId" jdbcType="VARCHAR" />
+	    <result column="phone" property="phone" jdbcType="VARCHAR" />
+	    <result column="address" property="address" jdbcType="VARCHAR" />
+	    <result column="cardpic1" property="cardpic1" jdbcType="VARCHAR" />
+	    <result column="cardpic2" property="cardpic2" jdbcType="VARCHAR" />
+	    <result column="bank_Name" property="bankName" jdbcType="VARCHAR" />
+	    <result column="bank_Card_Id" property="bankCardId" jdbcType="VARCHAR" />
+	    <result column="bank_Card_Name" property="bankCardName" jdbcType="VARCHAR" />
+	    <result column="update_Time" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="getCustomerList"  parameterType="com.sc.xxb.admin.model.Customer" resultMap="BaseResultMap" >
+		select * from  pub_customer
+		<where>
+			1 = 1
+			<if test=" customerId!=null and customerId !=0 ">
+				and customer_Id = #{customerId}
+			</if>
+			<if test=" customerName !=null and customerName !='' ">
+				and customer_Name like '%'||#{customerName}||'%'
+			</if>
+		</where>
+		ORDER BY update_Time DESC
+	</select>
+
+
+	<select id="getCount" parameterType="com.sc.xxb.admin.model.Customer" resultType="java.lang.Integer">
+		select count(1) from pub_customer t
+		<where>
+			1 = 1
+			<if test=" customerName !=null and customerName !='' ">
+				and customer_Name like '%'||#{customerName}||'%'
+			</if>
+		</where>
+	</select>
+
+	<insert id="insert" parameterType="com.sc.xxb.admin.model.Customer">
+	insert into pub_customer
+	  (customer_id, customer_name, customer_type, card_id, phone, address, cardpic1, cardpic2, bank_name, bank_card_id, bank_card_name, update_time)
+	values
+	  (SEQ_CUSTOMER.Nextval, #{customerName}, #{customerType}, #{cardId}, #{phone}, #{address}, #{cardpic1}, #{cardpic2}, #{bankName}, #{bankCardId}, #{bankCardName}, sysdate)
+
+	</insert>
+
+	<update id="update" parameterType="com.sc.xxb.admin.model.Customer">
+		update pub_customer
+		   set
+			   customer_name = #{customerName},
+			   customer_type = #{customerType},
+			   card_id = #{cardId},
+			   phone = #{phone},
+			   address = #{address},
+			   cardpic1 = #{cardpic1},
+			   cardpic2 = #{cardpic2},
+			   bank_name = #{bankName},
+			   bank_card_id = #{bankCardId},
+			   bank_card_name = #{bankCardName},
+			   update_time = sysdate
+		 where  customer_id = #{customerId}
+	</update>
+
+	<delete id="delete">
+		delete pub_customer  where customer_id in
+		<foreach collection="array" item="id" index="index"
+				 open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
+

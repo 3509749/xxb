@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<style>
+html {
+	height: 100%;
+	//
+	让html的高度等于屏幕
+}
+
+body {
+	height: 100%;
+	margin: 0;
+}
+</style>
+<body id="thisbody" >
+<form id="addForm" class="layui-form layui-form-pane" style="margin-top: 5px" th:object="${data}" >
+	<div class="layui-form-item">
+		<label class="layui-form-label ">登录账号</label>
+		<div class="layui-input-block">
+			<input type="text" name="userName" th:value="*{userName}" readonly="readonly"    autocomplete="off" class="layui-input disabled-background-color"  />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label required">原密码</label>
+		<div class="layui-input-block">
+			<input type="password" name="oldPassword"  required="" lay-verify="required" placeholder="请输入密码" value="" autocomplete="off" class="layui-input"  />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label required">新密码</label>
+		<div class="layui-input-block">
+			<input type="password" name="password"  required="" lay-verify="required" placeholder="请输入密码" value="" autocomplete="off" class="layui-input"  />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label required">重复新密码</label>
+		<div class="layui-input-block">
+			<input type="password" name="password"  required="" lay-verify="required" placeholder="请重复输入密码" value="" autocomplete="off" class="layui-input"  />
+		</div>
+	</div>
+	<input type="hidden" name="userId" th:value="*{userId}" />
+</form>
+</body>
+<script>
+    layui.use('form', function(){
+        form = layui.form;
+    });
+    function save() {
+        $.ajax({
+            type: 'POST',
+            url: path + 'xxbUser/changePassword',
+            data : $("#addForm").form2json(),
+            async : false,
+            success: function(result) {
+                    flag = result;
+            }
+        });
+        return flag;
+    }
+    function yz(){
+        if($("input[name='password']:eq(0)").val() != $("input[name='password']:eq(1)").val()){
+            failTip('重复密码不正确');
+            return false;
+		}
+        if(!Verification($("#addForm")))
+            return false;
+        else
+            return true;
+    }
+</script>
+</html>

@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<style>
+html {
+	height: 100%;
+	//
+	让html的高度等于屏幕
+}
+
+body {
+	height: 100%;
+	margin: 0;
+}
+</style>
+<body id="thisbody">
+<div class="content-header" id="header">
+	<div class="layui-btn-group">
+		<a class="layui-btn" id="add" onclick="addPage()"><i class="layui-icon">&#xe608;</i> 添加</a>
+		<a class="layui-btn" id="del" onclick="del()" ><i class="layui-icon">&#xe640;</i> 删除</a>
+	</div>
+	<div class="layui-inline" style="float:right;">
+		<div class="layui-inline">
+			<input type="text" id="searchValue" class="layui-input layui-input-search" placeholder="角色名" />
+		</div>
+		<div class="layui-inline">
+			<a class="layui-btn" onclick="reload()"><i class="layui-icon">&#xe615;</i> 查询</a>
+		</div>
+
+	</div>
+</div>
+
+<hr />
+<div id="table" lay-filter="demo" ></div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-mini" onclick="givePage('{{ d.roleId }}')">赋权</a>
+    <a class="layui-btn layui-btn-mini" onclick="editPage('{{ d.roleId }}')">编辑</a>
+</script>
+<script type="text/html" id="statusTpl">
+	{{#  if(d.status == '1'){ }}
+	<span style="color: #9ACD32;">启用</span>
+	{{#  } else { }}
+	<span style="color: #FF784E;">停用</span>
+	{{#  } }}
+</script>
+
+</body>
+<script>
+    var h=$("#thisbody").height()-$("#header").height()-25;
+    var w=($("#table").width()-220-50-10)/3;
+
+    var panelOption = {
+        type: 2 ,
+        area: ['500px', '230px'],
+        shade: 0.3,
+        scrollbar: false,
+        maxmin: true,
+        offset: '100px'
+    }
+
+    var table;
+    layui.use(['layer', 'table'], function(){
+        table= layui.table;
+        layui.table.render({
+            id : 'roleTable',
+            elem: '#table',
+            url: path + 'role/getRoleData',
+            height: h,
+            cols: [[ //标题栏
+                {checkbox: true, LAY_CHECKED: false,width: 50,align:'center'},
+                {field: 'roleName', title: '角色名称', width: '29%',align:'center'},
+                {field: 'notes', title: '备注',  width: '29%',align:'center'},
+                {field: 'status', title: '备注', width: '29%',templet: '#statusTpl',align:'center'},
+                {fixed: 'right', title: '操作', width:'10%', align:'center', toolbar: '#barDemo'}
+            ]],
+            skin: 'row', //表格风格
+            even: true,
+            page: true, //是否显示分页
+            limits: [15,20,50],
+            limit: 15, //每页默认显示的数量
+            loading: true, //请求数据时，是否显示loading
+            done: function(res, curr, count){
+            }
+        });
+
+        $("#searchValue").keydown(function(e){
+            var keyCode =window.event? e.keyCode:e.which;
+            if(keyCode== 13){
+                reload();
+            }
+        })
+    });
+    function addPage(){
+        layer.open(extend({
+            id :"addPage",
+            title: '角色新增',
+            content: [path + 'role/roleAdd',"no"],
+            btn: ['保存', '关闭'],
+            yes: function(index, layero){
+                var iframe = $(layero).find("iframe")[0].contentWindow;
+                if(iframe.save()){
+                    layer.close(index);
+                    reload();
+                    sucessTip("新增成功");
+                }else
+                    failTip("新增失败");
+            }
+        },panelOption));
+    };
+
+    function editPage(id){
+        layer.open(extend({
+            title: '角色编辑',
+            content: [path + 'role/roleAdd?id='+id,'no'],
+            btn: ['保存', '关闭'],
+            yes: function(index, layero){
+                var iframe = $(layero).find("iframe")[0].contentWindow;
+                if(iframe.save()){
+                    layer.close(index);
+                    reload();
+                    sucessTip("编辑成功");
+                }else
+                    failTip("编辑失败");
+            }
+        },panelOption));
+    }
+
+
+    function del() {
+        var checkStatus = table.checkStatus('roleTable'),data = checkStatus.data,ids="";
+        for(var i in data){
+            var temp = data[i];
+            ids +=  temp.roleId + ",";
+            if(temp.roleId == "1"){
+                failTip('管理员不能删除');
+                return;
+            }else{
+                layer.confirm('确认删除?', { icon: 3, title: '提示' }, function (index) {
+                    layer.close(index);
+                    $.post(path+'role/del',{ids:ids},function(results){
+                        sucessTip('删除'+results+'个角色');
+                        reload();
+                    });
+                });
+            }
+        }
+    }
+
+    function reload(){
+        table.reload("roleTable", {
+            where: {
+                roleName: $("#searchValue").val()
+            }
+        });
+    } ;
+    function detailPage(id){
+        layer.open(extend({
+            title: '角色详情',
+            content: path + 'role/roleDetail?id=' + id,
+            btn: ['关闭'],
+            btn1: function(index){
+                layer.close(index);
+            }
+        },panelOption));
+    }
+
+    function givePage(id){
+        layer.open(extend({
+            title: '角色赋权',
+            area: ['300px', '400px'],
+            content: [path + 'role/roleGive?id=' + id,"no"],
+            btn: ['保存', '关闭'],
+            yes: function(index, layero){
+                var iframe = $(layero).find("iframe")[0].contentWindow;
+                if(iframe.addResource()){
+                    layer.close(index);
+                    reload();
+                    sucessTip("赋权成功");
+                }else
+                    failTip("赋权失败");
+            }
+        },panelOption));
+    }
+
+
+</script>
+</html>

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+
+<title>日志详情</title>
+<style>
+html{
+height:100%;//让html的高度等于屏幕
+}
+body{
+height:100%;
+margin:0;
+overflow-x:hidden;
+overflow-y:hidden;
+}
+.layui-inline{
+	width: 100%;
+	padding-top: 10px;
+ }
+</style>
+<body id="thisbody">
+<form id="addForm" class="layui-form layui-form-pane" th:object="${data}"  style="margin-top: 5px">
+	<div class="layui-row">
+		<div >
+			<div class="layui-inline ">
+				<label class="layui-form-label required">操作员</label>
+				<div class="layui-input-block">
+					<input type="text"  name="userName"  id="userName" th:value="*{userName}" readonly="readonly" class="layui-input disabled-background-color"  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label required">操作类型</label>
+				<div class="layui-input-block" >
+					<input type="text"  name="operType"  id="operType" th:value="*{operType}" readonly="readonly" class="layui-input disabled-background-color"  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label required">操作实例</label>
+				<div class="layui-input-block" >
+					<input type="text"  name="operName"  id="operName" th:value="*{operName}" readonly="readonly" class="layui-input disabled-background-color"  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label required">返回参数</label>
+				<div class="layui-input-block">
+					<input type="text"  name="operResult"  id="operResult" th:value="*{operResult}" readonly="readonly" class="layui-input disabled-background-color"  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label required">参数名称</label>
+				<div class="layui-input-block">
+					<input type="text"  name="mainStr"  id="mainStr" th:value="*{mainStr}" readonly="readonly" class="layui-input disabled-background-color"  />
+				</div>
+			</div>
+			<div class="layui-inline  ">
+				<label class="layui-form-label  ">操作内容</label>
+				<div class="layui-input-block">
+					<textarea id="detailStr" name="detailStr" style="width:98%;height:135px;" readonly="readonly" th:inline="text" class="disabled-background-color">
+						[[*{detailStr}]]
+					</textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+</body>
+<script th:inline="javascript">
+	var data = [[${data}]];
+	var table;
+    layui.use(['upload', 'table','laydate','form'], function() {
+		upload = layui.upload;
+        laydate = layui.laydate;
+        table= layui.table;
+        form = layui.form;
+        laydate.render({
+            elem: '#operdateTime',
+            type: 'datetime',
+            value: new Date(data.operdateTime)
+        });
+        formFocus($("#addForm"));
+    });
+
+
+
+
+
+</script>
+</html>

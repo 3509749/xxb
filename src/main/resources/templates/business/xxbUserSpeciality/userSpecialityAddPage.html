@@ -1,0 +1,182 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="baseJs::header"  ></head>
+<style>
+    html {
+        height: 100%;
+    //
+    让html的高度等于屏幕
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+    }
+    .layui-form-pane .layui-form-label{
+        width: 150px;
+    }
+    .layui-form-pane .layui-input-block{
+        margin-left:150px;
+    }
+
+    .layui-inline{
+        width: 100%;
+        padding-top: 10px;
+    }
+    .inline2{
+        float: left;
+        width: 98%;
+        padding-left: 10px;
+    }
+    .inline4{
+        float: left;
+        width: 24%;
+        padding-left: 10px;
+    }
+</style>
+<body id="thisbody" >
+<form id="addForm" class="layui-form layui-form-pane" style="margin-top: 5px" th:object="${data}" >
+    <div class="layui-row"  style="width: 70%;float: left">
+        <div class="layui-inline">
+            <div class="inline2"  >
+                <label class="layui-form-label ">学员姓名</label>
+                <div class="layui-input-block">
+                    <input type="text"  th:value="*{userName}"     autocomplete="off" class="layui-input"   />
+                </div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="inline2"  >
+                <label class="layui-form-label ">学员身份证</label>
+                <div class="layui-input-block">
+                    <input type="text"  th:value="*{cardId}"     autocomplete="off" class="layui-input"   />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-inline">
+            <div class="inline2"  >
+                <label class="layui-form-label ">学校</label>
+                <div class="layui-input-block">
+                    <input type="text"  th:value="*{schoolName}"     autocomplete="off" class="layui-input"   />
+                </div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="inline2"  >
+                <label class="layui-form-label ">专业</label>
+                <div class="layui-input-block">
+                    <input type="text"  th:value="*{specialityName}"     autocomplete="off" class="layui-input"   />
+                </div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="inline2"  >
+                <label class="layui-form-label ">分类</label>
+                <div class="layui-input-block">
+                    <input type="text"  th:value="*{payTypeName}"      autocomplete="off" class="layui-input"   />
+                </div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="inline2"  >
+                <label class="layui-form-label ">付款类型</label>
+                <div class="layui-input-block">
+                    <input type="text"  th:value="*{payType}"     autocomplete="off" class="layui-input"   />
+                </div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="inline2"  >
+                <label class="layui-form-label ">收费金额</label>
+                <div class="layui-input-block">
+                    <input type="text"  th:value="*{payMoney}"      autocomplete="off" class="layui-input"   />
+                </div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="inline2"  >
+                <label class="layui-form-label ">备注</label>
+                <div class="layui-input-block">
+                    <input type="text"  th:value="*{notes}"      autocomplete="off" class="layui-input"   />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row"  style="width: 30%;float: left">
+        <table style="border-spacing:0px 50px;width: 100%">
+            <tr>
+                <td>
+                    <div class="picture">
+                        <a id="img1button" href="#"><img id="img1" th:src="null eq *{cardPic1}?@{../img/sfzzm.png}:*{cardPic1}" style="width: 370px;height: 160px"/></a>
+                        <p style="position:absolute; bottom:-80px; left:96px;">正面</p>
+                        <p id="demoText1"></p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="picture">
+                        <a id="img2button" href="#"><img id="img2" th:src="null eq *{cardPic2}?@{../img/sfzbm.png}:*{cardPic2}" style="width: 370px;height: 160px"/></a>
+                        <p style="position:absolute; bottom:-80px; left:96px;">反面</p>
+                        <p id="demoText2"></p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="layui-row"  style="width: 100%;float: left;padding-top: 50px;padding-left: 50px">
+        <table  style="border-spacing:50px 0px;width: 100%">
+            <tr>
+                <td>
+                    <div class="picture">
+                        <a id="img3button" href="#"><img id="img3" th:src="null eq *{educationPic}?@{../img/byz.png}:*{educationPic}" style="width: 310px;height: 135px"/></a>
+                        <p id="demoText3"></p>
+                    </div>
+                </td>
+                <td>
+                    <div class="picture">
+                        <a id="img4button" href="#"><img id="img4" th:src="null eq *{inchPhoto}?@{../img/no_picture.png}:*{inchPhoto}" style="width: 310px;height: 135px"/></a>
+                        <p id="demoText4"></p>
+                    </div>
+                </td>
+                <td>
+                    <div class="picture">
+                        <a id="img5button" href="#"><img id="img5" th:src="null eq *{netPic}?@{../img/no_picture.png}:*{netPic}" style="width: 310px;height: 135px"/></a>
+                        <p id="demoText5"></p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+</body>
+<script th:inline="javascript" >
+    var data = [[${data}]];
+    layui.use('form', function(){
+        form = layui.form;
+    });
+
+    function save() {
+        $.ajax({
+            type: 'POST',
+            url: path + 'userSpeciality/passCheckSign',
+            data:{id:data.id},
+            async : false,
+            success: function(result) {
+                if(result==1){
+                    flag = true;
+                }else{
+                    flag = false;
+                }
+            }
+        });
+        return flag;
+    }
+
+
+
+
+</script>
+</html>

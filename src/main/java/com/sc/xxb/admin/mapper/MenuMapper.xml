@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sc.xxb.admin.mapper.MenuMapper">
+
+	<resultMap id="UPermissionMAP" type="com.sc.xxb.admin.model.UPermission" >
+		<id column="menu_id" property="menuId" jdbcType="VARCHAR" />
+	    <result column="menu_Name" property="menuName" jdbcType="VARCHAR" />
+	    <result column="menu_Type" property="menuType" jdbcType="VARCHAR" />
+	    <result column="PARENT_ID" property="parentId" jdbcType="VARCHAR" />
+	    <result column="PARENT_NAME" property="parentName" jdbcType="VARCHAR" />
+	    <result column="URL" property="url" jdbcType="VARCHAR" />
+	    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+	    <result column="ORDER_NUM" property="orderNum" />
+  	</resultMap>
+  	
+	<select id="getMenuList" parameterType="com.sc.xxb.admin.model.UPermission"  resultMap="UPermissionMAP">
+		select t.menu_id, t.menu_name,t.menu_type, t.parent_id, t.url, t.notes, t.order_num,(select t2.menu_name from pub_MENU t2 where t2.menu_id = t.parent_id ) parent_name from pub_MENU t
+		<where>
+			1 = 1
+			<if test=" menuName !=null and menuName !=''">
+				and t.menu_name like '%'||#{menuName}||'%'
+			</if>
+			<if test=" menuId !=null and menuId !=''">
+				and t.menu_id like '%'||#{menuId}||'%'
+			</if>
+		</where>
+		order by parent_id desc
+	</select>
+
+	<select id="getMenuCount" parameterType="com.sc.xxb.admin.model.UPermission" resultType="java.lang.Integer">
+		SELECT count(1) from pub_MENU t
+		<where>
+			<if test=" menuName!=null and menuName !=''">
+				t.menu_name like '%'||#{menuName}||'%'
+			</if>
+		</where>
+	</select>
+
+	<insert id="insert" parameterType="com.sc.xxb.admin.model.UPermission">
+		insert into pub_menu
+		  (menu_id, menu_name, menu_type, parent_id, url, notes, order_num)
+		values
+		  (#{menuId}, #{menuName}, #{menuType}, #{parentId}, #{url}, #{notes}, #{orderNum})
+	</insert>
+
+	<update id="update" parameterType="com.sc.xxb.admin.model.UPermission">
+		update pub_menu
+		   set 
+			   menu_name = #{menuName},
+			   menu_type = #{menuType},
+			   parent_id = #{parentId},
+			   url = #{url},
+			   notes = #{notes},
+			   order_num = #{orderNum}
+		 where  menu_id = #{menuId}
+	</update>
+
+
+	<delete id="delete">
+		delete pub_menu  where menu_id in
+		<foreach collection="array" item="id" index="index"
+				 open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
+

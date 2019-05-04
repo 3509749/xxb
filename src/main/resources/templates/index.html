@@ -1,0 +1,23 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>首页</title>
+<meta name="application-name" content="首页"/>
+<head th:replace="baseJs::header"  ></head>
+<link th:href="@{/css/index.css}"   rel="stylesheet" />
+<link th:href="@{/css/slide.css}"   rel="stylesheet" />
+<link th:href="@{/css/css.css}"   rel="stylesheet" />
+
+
+<body>
+<img src="images/u0.jpg" usemap="#map" />
+<map name="map" id="map">
+    <area coords="90,400,75"  shape="circle" href="http://www.meksrmjcy.gov.cn/" />
+    <area coords="280,400,75"  shape="circle" href="http://www.meksrmjcy.gov.cn/" />
+    <area coords="470,400,75"  shape="circle" href="video" />
+</map>
+</body>
+<script th:inline="javascript">
+</script>
+</html>
